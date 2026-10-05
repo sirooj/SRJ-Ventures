@@ -62,3 +62,26 @@ through **GitHub Issues, PRs, and committed files**.
 New symbols / longer history: download a small pilot first, report disk usage
 per symbol-year, then scale. Don't re-download what already exists — check
 `SRJ_DATA` and sirooj's existing archives first.
+
+## 5. Tracks, session start, skills (E-001, E-007)
+
+This repo runs **two independent tracks**. A session works on exactly one of them.
+
+| Track | Pointer (read first) | Decisions | PromptQL bot's role |
+|---|---|---|---|
+| Flow Nexus port + infrastructure (Phase 0–1) | `docs/STATE.md` | `docs/DECISIONS.md` (D-xxx) | PLANNER |
+| Edge research (new edges, separate from Flow Nexus) | `research/edge/EDGE_STATE.md` | `research/edge/DECISIONS_EDGE.md` (E-xxx) | RESEARCHER |
+
+- **RESEARCHER** (PromptQL bot, edge track): designs and runs studies in its own cloud VM, on Dukascopy data it downloads itself. It never needs the D: drive. Its GitHub writes go through the CODER as backup relays.
+- The resume line names the track. If it doesn't, ask the operator one question before doing anything.
+- Never act on the other track (reviews, relays, STATE edits) unless the operator asks.
+- PromptQL bot display names change per project ("3 SRJ Venture Bot", "4 SRJ Venture Bot", …). Refer to roles, not names.
+
+Skills live in `.opencode/skills/<name>/SKILL.md`. Any agent can also read them directly as files.
+
+| Skill | Use when |
+|---|---|
+| `srj-session-start` | First thing in any session, in either role |
+| `srj-hard-constraints` | Before proposing, coding, testing or approving any strategy, and before any commit |
+| `srj-edge-study` | Designing, running or reporting an edge study |
+| `srj-research-backup` | After every study and at session end, when writing or executing a backup relay |
