@@ -1,5 +1,7 @@
 # AGENTS.md — SRJ Ventures relay protocol + working conventions
 
+**Session start: read `docs/STATE.md`, then `docs/DECISIONS.md`.**
+
 This repo is the **only channel** between the cloud orchestrator
 ("1 SRJ Ventures Bot", PromptQL) and the local CODER agent running on sirooj's
 Windows machine. The orchestrator cannot see this machine. Everything flows
