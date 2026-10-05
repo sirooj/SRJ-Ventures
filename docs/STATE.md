@@ -47,25 +47,25 @@ Labels: `ready-for-code`, `in-progress`, `needs-review`, `question`, `research`,
 **Phase 0 · Foundation:** ✅ done, PR #1 approved (merge pending).
 Data on D: — FX EURUSD, GBPUSD, USDJPY ticks + 1m bars from Dec 2025 → Oct 2026; indices from the pilot week only. Tick schema: `ts` (UTC ms), `bid`, `ask`, `bid_vol`, `ask_vol`, `spread`. FX point values are verified (1e5; JPY 1e3). Index point values are provisional (1e3).
 
-**Phase 1 · Data + evaluator:** 🔄 issues ready to file (`phase1_issues_v2`).
+**Phase 1 · Data + evaluator:** 🔄 in progress.
 
-| Draft | Expected # | Title | Depends on | Status |
-|---|---|---|---|---|
-| A | #2 | [DATA] Full-history pilot 2023→today + index point verification | — | to file |
-| B1 | #3 | [PROPFIRM] Rules schema + loader + FTMO 2-Step / 1-Step / The5ers YAMLs | — | to file |
-| B2 | #4 | [PROPFIRM] Challenge simulator v0 + Monte Carlo + demo | B1 merged | to file |
-| C | #5 | [RESEARCH] Read-only MQL5 inventory (no source in public repo) | — | to file |
-| D | #6 | [CODE] Phase 0 follow-ups (provenance, tick-rule carry, profile levels) | A merged | to file |
+| # | Title | Depends on | Status |
+|---|---|---|---|
+| #2 | [DATA] Full-history pilot + index point verification | — | in-progress: downloader fixes pushed on `issue-2-full-history-pilot`; full download running since 2026-10-05 ~13:20 UTC (`--no-convert`); dukascopy-node v1.50.0 confirmed |
+| #3 | [PROPFIRM] Rules schema + loader + 3 YAMLs | — | PR #8: changes requested (reference/allowance split, conservative defaults, unknown-key rejection) |
+| #4 | [PROPFIRM] Challenge simulator v0 + MC + demo | #3 merged | queued |
+| #5 | [RESEARCH] Read-only MQL5 inventory | sirooj's answers | next for CODER |
+| #6 | [CODE] Phase 0 follow-ups | #2 merged | queued |
+| PR #7 | Planner docs (STATE, DECISIONS, WIKI_SEED) | #1 merged | needs-review (planner-approved once this update lands) |
 
 Later phases: 1-port (baseline = sirooj's existing strategy, target picked after C) → 2 indicators/backtest adapter → 3 research cards and a weekly research schedule → 4 loop automation → 5 paper trading, then a live challenge.
 
 ## 5. Next actions
 
-1. **sirooj:** merge PR #1 (`phase0-scaffold` → `main`). Then set the repo's default branch to `main`; it is currently `phase0-scaffold`.
-2. **sirooj (optional):** install the PromptQL GitHub App on `SRJ-Ventures` (GitHub integration card → Settings → Manage installations), so the planner can file issues and review directly.
-3. **CODER:** file A, B1, B2, C, D verbatim from the planner's v2 text, in that order. Report the numbers, then start A (long download in the background) and B1 in parallel.
-4. **sirooj:** answer the Issue C questions (which project runs live; does an EA place orders; instruments, timeframes, sessions; does a statement exist).
-5. **PLANNER:** review the A and B1 PRs, then write strategy cards 1–8 (Blueprint §6) as `research/cards/*.md`.
+1. **sirooj:** merge PR #1, set the default branch to `main`, then merge PR #7 once the CODER has rebased it.
+2. **sirooj:** answer the #5 questions (live project; EA vs manual; instruments/TF/sessions; statement exists?).
+3. **CODER:** rebase #7/#8/issue-2 onto `main`; fix PR #8; pick up #5; keep #2 running.
+4. **PLANNER:** re-review PR #8 → green-light #4 → draft strategy cards 1–8 (Blueprint §6) as `research/cards/*.md`.
 
 ## 6. Hard constraints (from DECISIONS)
 
