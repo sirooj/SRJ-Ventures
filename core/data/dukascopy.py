@@ -234,7 +234,11 @@ def _fetch_and_store(client: httpx.Client, symbol: str, dt: datetime) -> str:
     if not payload:  # None (404) or empty body — nothing to store
         raw_empty_path(symbol, dt.year, month0(dt), dt.day, dt.hour).write_bytes(b"")
         return "empty"
-    path.write_bytes(payload)
+    # Atomic write: a kill mid-download must never leave a truncated .bi5
+    # that resume would mistake for a complete (quiet) hour.
+    tmp = path.with_suffix(".part")
+    tmp.write_bytes(payload)
+    tmp.replace(path)
     return "stored"
 
 
