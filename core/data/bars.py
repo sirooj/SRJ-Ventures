@@ -16,12 +16,11 @@ Usage::
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
 
 import numpy as np
 import polars as pl
 
-from .paths import bars_path, data_root, ticks_month_path
+from .paths import bars_path, ticks_month_path
 
 BAR_SCHEMA = {
     "ts": pl.Datetime(time_unit="ms", time_zone="UTC"),

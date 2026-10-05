@@ -1,0 +1,76 @@
+# FTMO 2-Step Standard — transcribed 2026-10-05, verify before purchase.
+firm: FTMO
+program: 2-Step Standard
+verify_before_purchase: true
+
+phases:
+  - profit_target_pct: 10
+    min_trading_days: 4
+    min_profitable_days: 0
+    time_limit_days: null
+    target_requires_flat: false
+  - profit_target_pct: 5
+    min_trading_days: 4
+    min_profitable_days: 0
+    time_limit_days: null
+    target_requires_flat: false
+
+daily_loss:
+  pct: 5
+  pct_of: initial # allowance = 5% of the initial balance...
+  reference: reset_balance # ...below the 00:00 Europe/Prague balance
+  measured_on: equity
+  reset_tz: Europe/Prague
+  reset_time: "00:00"
+
+max_loss:
+  pct: 10
+  pct_of: initial
+  type: static
+  trail_reference: null
+  lock_at: null
+
+consistency:
+  best_day_max_pct_of_positive_days: null
+
+news:
+  evaluation_restricted: false
+  funded_window_min: 2
+
+trading_limits:
+  weekend_holding: null
+  max_requests_per_day: 2000
+  min_hold_seconds: null
+
+payout:
+  split_pct: 90 # advertised "up to 90%"
+  split_max_pct: 90
+  first_after_days: null
+  cycle_days: null
+
+fees:
+  fee_by_size: null # sirooj fills it
+  fee_refund: true
+
+banned_behaviors: [HFT, latency arbitrage, cross-account hedging, gap trading]
+
+sources:
+  - {url: https://ftmo.com/en/comparison-table/, accessed: "2026-10-05"}
+  - {url: https://academy.ftmo.com/lesson/maximum-daily-loss/, accessed: "2026-10-05"}
+  - {url: https://ftmo.com/en/2-step-challenge/, accessed: "2026-10-05"}
+
+modeled_in_sim:
+  daily_loss: true
+  max_loss: true
+  consistency: true
+  news: false
+  min_hold_seconds: true
+  max_requests_per_day: false
+  weekend_holding: false
+  payout: false
+  fees: false
+
+notes:
+  - Daily loss is measured on equity (floating P/L + swaps + commissions); the limit is the 00:00 Europe/Prague balance minus 5% of initial. A breach is the lowest equity touch, even momentary.
+  - No best-day rule in the challenge, but one page implies it may apply to rewards — verify.
+  - News unrestricted in evaluation; funded Standard accounts restricted around high-impact news, assumed ±2 min until confirmed.
