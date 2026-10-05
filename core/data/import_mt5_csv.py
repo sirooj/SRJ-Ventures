@@ -16,8 +16,10 @@ Output matches the standard monthly tick layout
 
 Usage::
 
-    python -m core.data.import_mt5_csv --symbol EURUSD --format mt5-server D:\\download\\eurusd-topup.csv
-    python -m core.data.import_mt5_csv --symbol EURUSD --format dukascopy-node-utc D:\\download\\aug03-eurusd-utc.csv
+    python -m core.data.import_mt5_csv --symbol EURUSD --format mt5-server \
+        D:\\download\\eurusd-topup.csv
+    python -m core.data.import_mt5_csv --symbol EURUSD --format dukascopy-node-utc \
+        D:\\download\\aug03-eurusd-utc.csv
 """
 from __future__ import annotations
 

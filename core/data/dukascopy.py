@@ -17,7 +17,8 @@ hours logged to a CSV under ``$SRJ_DATA/dukascopy/``.
 
 Usage::
 
-    python -m core.data.dukascopy download --symbols EURUSD,GBPUSD --start 2023-01-01 --end 2023-02-01
+    python -m core.data.dukascopy download --symbols EURUSD,GBPUSD \
+        --start 2023-01-01 --end 2023-02-01
     python -m core.data.dukascopy convert --symbol EURUSD --year 2023 --month 1
 """
 from __future__ import annotations
@@ -37,7 +38,13 @@ import polars as pl
 import yaml
 from tqdm import tqdm
 
-from .paths import data_root, raw_bi5_path, repo_file, ticks_month_path
+from .paths import (
+    data_root,
+    raw_bi5_path,
+    raw_empty_path,
+    repo_file,
+    ticks_month_path,
+)
 
 FEED = "https://datafeed.dukascopy.com/datafeed"
 FEED_HOST = "datafeed.dukascopy.com"
@@ -213,16 +220,32 @@ def fetch_hour(
 
 
 def _fetch_and_store(client: httpx.Client, symbol: str, dt: datetime) -> str:
-    """Fetch one hour and store the raw .bi5. Returns status: stored/empty/exists."""
+    """Fetch one hour and store the raw .bi5 (or an .empty marker).
+
+    Returns: stored / exists / empty / failed is counted by the caller.
+    A 0-byte ``<HH>h_ticks.empty`` marker records feed-confirmed empty hours
+    (404 or empty body) so resumes skip weekends/holidays without re-requests.
+    """
     path = raw_bi5_path(symbol, dt.year, month0(dt), dt.day, dt.hour)
-    if path.exists():
+    if path.exists() or raw_empty_path(symbol, dt.year, month0(dt), dt.day, dt.hour).exists():
         return "exists"
     payload = fetch_hour(client, symbol, dt)
     path.parent.mkdir(parents=True, exist_ok=True)
-    if payload is None:
-        return "empty"  # 404 — nothing to store
+    if not payload:  # None (404) or empty body — nothing to store
+        raw_empty_path(symbol, dt.year, month0(dt), dt.day, dt.hour).write_bytes(b"")
+        return "empty"
     path.write_bytes(payload)
     return "stored"
+
+
+def fresh_hours(hours: list[datetime], now: datetime) -> list[datetime]:
+    """Drop hours that may still be partial: end later than ``now − 1h``.
+
+    The current hour (and any future hour) is excluded so resumes never freeze
+    a partial file as complete. Pure function of (hours, now) — tested.
+    """
+    cutoff = now - timedelta(hours=1)
+    return [dt for dt in hours if dt + timedelta(hours=1) <= cutoff]
 
 
 def download_range(
@@ -230,14 +253,19 @@ def download_range(
     start: datetime,
     end: datetime,
     max_workers: int = MAX_WORKERS,
+    now: datetime | None = None,
 ) -> dict:
     """Download every hour in [start, end) for each symbol.
 
-    Resume-safe: existing files are skipped. Returns a stats dict and writes
-    failed hours (exceptions after retries) to a CSV under ``$SRJ_DATA``.
+    Resume-safe: existing files *and* `.empty` markers are skipped; hours that
+    may still be partial (ending after ``now − 1h``) are excluded and counted
+    as ``skipped``. Returns a stats dict and writes failed hours (exceptions
+    after retries) to a CSV under ``$SRJ_DATA``.
     """
-    hours = list(hour_range(start, end))
-    stats = {"stored": 0, "exists": 0, "empty": 0, "failed": 0}
+    hours = fresh_hours(list(hour_range(start, end)),
+                        now or datetime.now(timezone.utc))
+    skipped = (len(list(hour_range(start, end))) - len(hours)) * len(symbols)
+    stats = {"stored": 0, "exists": 0, "empty": 0, "failed": 0, "skipped": skipped}
     failures: list[tuple[str, str, str]] = []
     total = len(hours) * len(symbols)
 
@@ -337,6 +365,11 @@ def main(argv: list[str] | None = None) -> None:
     dl.add_argument("--resolve", default=None, metavar="IP|auto",
                     help="pin feed host to IP, or 'auto' to resolve via DoH "
                          "(for DNS-hijacking ISPs; keeps TLS verification on)")
+    dl.add_argument("--no-convert", action="store_true",
+                    help="only download raws; skip monthly parquet conversion "
+                         "(for unverified point values)")
+    dl.add_argument("--convert-symbols", default=None, metavar="SYM,...",
+                    help="convert only these symbols (default: all downloaded)")
 
     cv = sub.add_parser("convert", help="convert one raw month to parquet")
     cv.add_argument("--symbol", required=True)
@@ -364,10 +397,17 @@ def main(argv: list[str] | None = None) -> None:
             if uninstall:
                 uninstall()
         print(stats)
+        if args.no_convert:
+            return
+        convert_set = set(symbols)
+        if args.convert_symbols:
+            convert_set &= {s.strip() for s in args.convert_symbols.split(",")}
         # Convert every touched month.
         cur = datetime(start.year, start.month, 1, tzinfo=timezone.utc)
         while cur < end:
             for sym in symbols:
+                if sym not in convert_set:
+                    continue
                 feed_sym = cfg[sym]["dukascopy_symbol"]
                 point = args.point or cfg[sym]["point"]
                 if point is None:
