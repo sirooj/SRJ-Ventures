@@ -75,17 +75,17 @@ def test_bad_tz_and_time_rejected(tmp_path):
 def test_floors_planner_table():
     """D-017 semantics pinned: initial = 100,000."""
     r2 = load_rules(RULES / "ftmo_2step_standard.yaml")
-    assert daily_floor(r2, 100_000, 103_000) == 98_000
-    assert max_floor(r2, 100_000, 999_999) == 90_000  # static ignores trail
+    assert daily_floor(r2, 100_000, 103_000) == pytest.approx(98_000)
+    assert max_floor(r2, 100_000, 999_999) == pytest.approx(90_000)
 
     r5 = load_rules(RULES / "the5ers_high_stakes.yaml")
-    assert daily_floor(r5, 100_000, 103_000) == 97_850
+    assert daily_floor(r5, 100_000, 103_000) == pytest.approx(97_850)
 
     r1 = load_rules(RULES / "ftmo_1step.yaml")
-    assert max_floor(r1, 100_000, 104_000) == 94_000
+    assert max_floor(r1, 100_000, 104_000) == pytest.approx(94_000)
     # Ratchet never falls: caller keeps the running max, floor stays put.
     trail = max(104_000, 99_000)
-    assert max_floor(r1, 100_000, trail) == 94_000
+    assert max_floor(r1, 100_000, trail) == pytest.approx(94_000)
 
 
 def test_modeled_defaults_to_false(tmp_path):

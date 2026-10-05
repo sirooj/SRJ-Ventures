@@ -1,0 +1,35 @@
+{
+  "single_attempt": {
+    "passed": false,
+    "breach_rule": null,
+    "breach_ts": null,
+    "days_to_pass": null,
+    "trading_days": 23,
+    "profitable_days": 12,
+    "best_day_ratio": 0.20011220472211935,
+    "unmodeled": [
+      "device_ip",
+      "fees",
+      "max_requests_per_day",
+      "news",
+      "payout",
+      "weekend_holding"
+    ],
+    "min_hold": "n/a"
+  },
+  "monte_carlo": {
+    "n_paths": 50,
+    "p_pass_phase1": 0.7,
+    "p_pass_all": 0.7,
+    "median_days_to_pass": 17,
+    "median_stagnation_days": 7,
+    "p_breach_by_rule": {
+      "max_loss": 0.2
+    },
+    "expected_first_payout": 17475.593139501172,
+    "ev_per_fee": 11692.91519765082,
+    "fee": 540.0
+  },
+  "n_trades": 40,
+  "note": "dummy random entries, March 2026"
+}

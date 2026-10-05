@@ -1,0 +1,50 @@
+FTMO Â· FTMO - Normal Challenge - 2-Steps 100K
+ftmo/ftmo-normal-challenge-2-steps-100k Â· cfd Â· account 100,000 eur Â· fee 540 eur one-time
+Data: live LuxAlgo directory Â· provenance directory+inferred, inferred from free text:
+maxLoss.mode, dailyLoss.semantics, funded.payoutFrequency
+Trader: bootstrap of 40 recorded trades (mean block 5) Â· 2.11 trades/day Â· risk 0.5% of initial per trade
+Run: 10,000 paths Â· seed 42 Â· attempt cap 25 Â· engine 1.3.0
+
+Pass probability per attempt                  100.0% (95% CI 100.0â€“100.0%)
+  Step 1 Â· target +10%                        100.0% (95% CI 100.0â€“100.0%)
+  Step 2 Â· target +5%                         100.0% (95% CI 100.0â€“100.0%)
+Avg days per attempt                          48.7 when passed Â· n/a when failed
+
+Funded within 25 attempts                     100.0% (95% CI 100.0â€“100.0%)
+Attempts until funded                         mean 1 Â· p50 1 Â· p90 1
+Total cost                                    mean 0 eur Â· p50 0 eur Â· p90 0 eur Â· p95 0 eur
+Cost when funded                              mean 0 eur Â· p50 0 eur Â· p90 0 eur
+Days to funded (trading days)                 p50 46 Â· p75 59 Â· p90 73
+Stagnation (days without a new equity high)   p50 9 Â· p90 20
+
+EV Â· challenge journey + funded horizon of 90 trading days
+  EV total                                    +23,591 eur Â± 125 eur (95% CI)
+  P(EV > 0)                                   100.0%
+  Payout if funded                            mean 23,591 eur Â· p50 23,449 eur Â· avg 7.9 payout events
+  Payout probability | funded                 100.0%
+  Days to 1st payout                          p50 10 Â· p90 20
+  Funded accounts blown                       0.0% within the horizon
+Max drawdown while evaluating                 p50 2.5% Â· p95 4.5% of initial balance
+
+Not simulated / assumptions:
+  â€¢ trades-resolve-same-day: All trades are modeled as same-day round trips; overnight and weekend
+    holding are not simulated.
+  â€¢ intra-trade-excursions-not-modeled: Equity is observed at each trade close; favorable/adverse
+    excursions inside a trade are not modeled, which slightly understates trailing-drawdown and
+    open-PnL breach risk (real odds are somewhat worse).
+  â€¢ post-target-min-days-risk-free: After every objective is met, remaining minimum trading days
+    are simulated as risk-free trading days.
+  â€¢ attempts-iid: Attempts are independent draws from the same trader profile; no learning or tilt
+    effects.
+  â€¢ funded-withdrawal-model: On each eligible payout day the trader withdraws the maximum the
+    rules allow (profit above any buffer, per-payout caps, never below the loss floor); balances
+    and loss floors carry across payouts.
+  â€¢ bootstrap-resampling: Outcomes are stationary-block-bootstrap resamples of the provided
+    R-series; the future is assumed to look like that sample, including its streakiness.
+
+Simulation, not prediction. Results are Monte Carlo distributions under the stated assumptions and
+the encoded ruleset, not financial advice and not a guarantee of passing any challenge. Firms
+change their rules; the firm's own published rules are always authoritative. Check the spec's
+source citations and their lastVerified dates when present.
+
+--- STDERR ---
