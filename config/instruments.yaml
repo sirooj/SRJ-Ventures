@@ -1,0 +1,47 @@
+# SRJ Ventures instrument universe.
+# - `dukascopy_symbol`: exact feed symbol (index symbols verified against the
+#   Dukascopy feed in Phase 0 pilot; FX symbols are spot-standard).
+# - `point`: int-price divisor for .bi5 files. NEVER assumed — each value must
+#   be verified empirically against a known quote before use. `null` = unverified.
+# - `sessions`: trading sessions in local exchange time (zoneinfo handles DST).
+# - `vp_bin`: default volume-profile bin size in price units (tunable per study).
+
+fx_majors: &fx
+  sessions:
+    - {name: asia,   tz: Europe/London,    open: "00:00", close: "08:00"}
+    - {name: london, tz: Europe/London,    open: "08:00", close: "16:30"}
+    - {name: new_york, tz: America/New_York, open: "09:30", close: "16:00"}
+
+instruments:
+  # ---- FX majors (pilot: first three) ----
+  # point VERIFIED 2026-10-05: tick-exact match vs sirooj's dukascopy-node
+  # archives (D:\download\aug03-*-utc.csv) for hour 2026-08-02 21:00 UTC.
+  EURUSD: {dukascopy_symbol: EURUSD, point: 100000, point_verified: true, vp_bin: 0.00050, sessions: *fx}
+  GBPUSD: {dukascopy_symbol: GBPUSD, point: 100000, point_verified: true, vp_bin: 0.00050, sessions: *fx}
+  USDJPY: {dukascopy_symbol: USDJPY, point: 1000, point_verified: true, vp_bin: 0.05000, sessions: *fx}
+  AUDUSD: {dukascopy_symbol: AUDUSD, point: null, vp_bin: 0.00050, sessions: *fx}
+  USDCAD: {dukascopy_symbol: USDCAD, point: null, vp_bin: 0.00050, sessions: *fx}
+  USDCHF: {dukascopy_symbol: USDCHF, point: null, vp_bin: 0.00050, sessions: *fx}
+  NZDUSD: {dukascopy_symbol: NZDUSD, point: null, vp_bin: 0.00050, sessions: *fx}
+
+  # ---- Indices (feed symbols verified live in Phase 0 pilot) ----
+  # point PROVISIONAL 2026-10-05: point=1000 gives levels matching public
+  # Sep/Oct-2026 closes (SPX~7700, NDX~30680, DJI~51180, DAX~25180, FTSE~10450)
+  # with sane CFD spreads (0.5-2.0 pts). No tick-level reference exists
+  # (sirooj's archives are FX-only) — re-verify before backtest use.
+  # NOTE: US index CFDs halt daily ~21:15-22:00 UTC (CME maintenance); expect
+  # ~94% raw minute-coverage — the halt is a market closure, not missing data.
+  USA500IDXUSD:  {dukascopy_symbol: USA500IDXUSD,  point: 1000, point_verified: false, vp_bin: 1.0,
+                  sessions: [{name: new_york, tz: America/New_York, open: "09:30", close: "16:00"}]}
+  USATECHIDXUSD: {dukascopy_symbol: USATECHIDXUSD, point: 1000, point_verified: false, vp_bin: 5.0,
+                  sessions: [{name: new_york, tz: America/New_York, open: "09:30", close: "16:00"}]}
+  USA30IDXUSD:   {dukascopy_symbol: USA30IDXUSD,   point: 1000, point_verified: false, vp_bin: 10.0,
+                  sessions: [{name: new_york, tz: America/New_York, open: "09:30", close: "16:00"}]}
+  DEUIDXEUR:     {dukascopy_symbol: DEUIDXEUR,     point: 1000, point_verified: false, vp_bin: 2.0,
+                  sessions: [{name: xetra, tz: Europe/Berlin, open: "09:00", close: "17:30"}]}
+  GBRIDXGBP:     {dukascopy_symbol: GBRIDXGBP,     point: 1000, point_verified: false, vp_bin: 2.0,
+                  sessions: [{name: lse, tz: Europe/London, open: "08:00", close: "16:30"}]}
+
+pilot:
+  symbols: [EURUSD, GBPUSD, USDJPY, USA500IDXUSD, USATECHIDXUSD]
+  start: "2023-01-01"

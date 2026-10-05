@@ -1,0 +1,31 @@
+# Tick/bar datasets live OUTSIDE the repo under $SRJ_DATA — never commit them.
+# (Scoped patterns so core/data/*.py source files are still tracked.)
+*.parquet
+*.bi5
+*.h5
+*.hdf5
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+.uv/
+
+# Caches / tooling
+.cache/
+.python/
+.tools/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Secrets
+.env
+*.pem
+*.key
