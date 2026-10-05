@@ -17,7 +17,8 @@ hours logged to a CSV under ``$SRJ_DATA/dukascopy/``.
 
 Usage::
 
-    python -m core.data.dukascopy download --symbols EURUSD,GBPUSD --start 2023-01-01 --end 2023-02-01
+    python -m core.data.dukascopy download --symbols EURUSD,GBPUSD \
+        --start 2023-01-01 --end 2023-02-01
     python -m core.data.dukascopy convert --symbol EURUSD --year 2023 --month 1
 """
 from __future__ import annotations

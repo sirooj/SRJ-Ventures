@@ -1,1 +1,1 @@
-"""Prop-firm rule overlays (drawdown, daily loss, consistency) — Phase 1+. (Placeholder.)"""
+"""Prop-firm rule overlays: typed rulebooks (rules.py) + challenge simulator."""
