@@ -3,7 +3,7 @@
 > **Read this first in every edge-research session.** This track is separate from the Flow Nexus track (`docs/STATE.md`). Don't mix them.
 > **Owner:** the RESEARCHER updates this file in every backup relay, and the CODER commits it verbatim.
 
-_Last updated: 2026-10-06 (researcher session 2, PromptQL project "4 SRJ Venture", bot `7b7cb100-a425-4362-aed4-732283e70666`)_
+_Last updated: 2026-10-06 (researcher session 2, PromptQL project "4 SRJ Venture", bot `7b7cb100-a425-4362-aed4-732283e70666`), backup 02a_
 
 ---
 
@@ -40,38 +40,24 @@ GitHub is connected in PromptQL project "4 SRJ Venture" through sirooj's account
 | # | Study | Status | Result | Report |
 |---|---|---|---|---|
 | 01 | US index open scalping on NAS100/US500: ORB, ORB fade, Gao intraday momentum | done 2026-10-05 | **Null.** No edge larger than about 0.13R per trade; 0 FTMO passes (E-008) | `studies/01_us_open_scalping/REPORT.md` |
-| 02 | Unusual-day filter for the NY open, volume-first (see §6) | designed, not started | — | — |
+| 02 | NY open on unusual days, read through volume structure | **in progress**: card locked (E-010); index points verified (E-011); full data download running on the researcher's VM | — | `studies/02_open_unusual_days/CARD.md` |
 
 **Lost:** session 1's scripts (`cost_map.py`, `orb.py`, `diag.py`) and its draft state and decision files lived only on that bot's VM. They were never pushed. E-006 exists to stop this from happening again.
 
 ## 5. Next actions
 
-1. **CODER:** commit backup 01 and report the PR number and merge SHA.
-2. **OPERATOR:** confirm or veto E-005 (the CODER merges backup PRs itself). Then tell the researcher "go 02".
-3. **RESEARCHER:** run study 02 per §6:
-   - Card first.
-   - Pilot one month of data.
-   - Step 1: does the conditioning separate direction?
-   - Push the card, scripts and step-1 results in backup 02 before going further.
+1. **CODER:** commit backup 02a and report the PR number and merge SHA.
+2. **RESEARCHER:**
+   - Finish the download: NAS100 + US500, 13–20 UTC weekday hours, 2022-11-15 → 2026-09-30, via `studies/02_open_unusual_days/scripts/pilot_download.py`. Re-run once to fill failed hours (resume-safe).
+   - Convert to parquet and build 1m bid bars with the repo's `core/data` code.
+   - Write `scripts/step1.py` (features F1–F7 from CARD.md, using `core/indicators`). Run IS first, write the IS tables, then run OOS.
+   - Back up step-1 results and scripts as backup 02b before step 2.
+3. **If the researcher's VM is lost:** the scripts in this backup re-create the data in about 2.5 h (4 workers). Nothing else is needed.
+4. **OPERATOR (optional, Flow Nexus track):** E-011's point evidence could let `config/instruments.yaml` mark both indices `point_verified: true`. That file is shared infrastructure, so it changes only through the planner/CODER track, not through an edge backup.
 
-## 6. Study 02 design (draft; locked in CARD.md before any results are seen)
+## 6. Study 02 design
 
-- **Question:** the NY open moves a lot but has no unconditional direction (study 01). On *unusual* days, read through volume structure, does the open's direction become predictable?
-- **Universe:** NAS100 (`USATECHIDXUSD`) and US500 (`USA500IDXUSD`).
-  - Window: 09:30–11:30 ET.
-  - No entries 09:55–10:05 ET, or within ±5 min of high-impact news.
-- **Data:** Dukascopy bid ticks, 2023-01-01 → 2026-09-30.
-  - In-sample (IS): 2023-01 → 2025-06.
-  - Out-of-sample (OOS): 2025-07 → 2026-09.
-  - Index point values must be verified tick-exact before conversion. Pilot one month first.
-- **Causal day features, measured at 09:30 + N minutes:**
-  - **Open vs the prior regular session's (09:30–16:00 ET) volume profile:** inside value, above VAH, or below VAL. Distance to the prior POC and to naked POCs.
-  - **Gap** relative to the prior POC.
-  - **Relative volume (RVOL):** tick count in the first N minutes ÷ the mean for the same window over the last 20 days.
-  - **VWAP acceptance:** consecutive closes on one side of the session VWAP. Position relative to the σ bands.
-  - **CVD divergence** at the opening-range extremes (used for divergence only, D-006).
-  - **Context only:** opening-range width ÷ 14-day ATR.
-- **Discretionary read, codified:** classify each open as open-drive, open-test-drive, open-rejection-reverse, open-auction, or unclassified (Dalton opening types). Also test the "80% rule": an open outside value that is accepted back inside tends to travel to the other side of value. Ambiguous cases go to `unclassified` and are never forced into a type.
-- **Step 1:** forward returns at +15, +30 and +60 min by feature bucket and opening type, with counts and t-stats, IS vs OOS.
-  - **Kill criterion:** no bucket shows |t| ≥ 2 in IS together with the same sign and |t| ≥ 1.5 in OOS, with at least 40 days per bucket.
-- **Step 2 (only if step 1 survives):** scalp entries that obey the hard constraints, then costs (real spread, commission and stress slippage, and also zero slippage), then FTMO and The5ers challenge simulation from rolling start dates.
+Locked in `studies/02_open_unusual_days/CARD.md` (E-010). It supersedes the draft that was here in backup 01. Changes from the draft, all made before any data was seen:
+- Decision times fixed at 09:45 and 10:05 ET; forward horizons +15/+30/+60 min, measured in ATR14 units.
+- Exact feature buckets, codified Dalton opening-type thresholds, and the 80% rule's base-rate comparison.
+- Grid fixed at 344 tests, with a 5-part kill criterion (including cross-index or adjacent-horizon robustness and a minimum mean of 0.05 ATR14).
