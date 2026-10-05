@@ -17,15 +17,17 @@ phases:
 
 daily_loss:
   pct: 5
-  basis: initial
+  pct_of: initial # allowance = 5% of the initial balance...
+  reference: reset_balance # ...below the 00:00 Europe/Prague balance
   measured_on: equity
   reset_tz: Europe/Prague
   reset_time: "00:00"
 
 max_loss:
   pct: 10
+  pct_of: initial
   type: static
-  trail_basis: null
+  trail_reference: null
   lock_at: null
 
 consistency:

@@ -12,15 +12,17 @@ phases:
 
 daily_loss:
   pct: 3
-  basis: initial
+  pct_of: initial
+  reference: reset_balance
   measured_on: equity
   reset_tz: Europe/Prague
   reset_time: "00:00"
 
 max_loss:
   pct: 10
+  pct_of: initial
   type: eod_trailing
-  trail_basis: max(highest 00:00 balance, initial) minus 10% of initial; only rises
+  trail_reference: highest_reset_balance
   lock_at: null
 
 consistency:
@@ -64,3 +66,4 @@ modeled_in_sim:
 notes:
   - Daily loss 3% on equity from the 00:00 Prague balance.
   - EOD trailing max loss: limit = max(highest 00:00 balance, initial) − 10% of initial.
+  - max_requests_per_day 2000 assumes the same FTMO order-traffic regime as the 2-Step; verify.

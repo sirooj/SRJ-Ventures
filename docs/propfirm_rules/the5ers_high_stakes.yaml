@@ -17,15 +17,17 @@ phases:
 
 daily_loss:
   pct: 5
-  basis: prior_day_balance # verify whether equity or balance applies when they differ
-  measured_on: balance
+  pct_of: reference # conservative: allowance scales with the reference
+  reference: reset_max_balance_equity # verify; higher of balance/equity is the stricter floor
+  measured_on: equity # stricter reading until verified; was balance
   reset_tz: UTC+3
   reset_time: "00:00"
 
 max_loss:
   pct: 10
+  pct_of: initial
   type: static
-  trail_basis: null
+  trail_reference: null
   lock_at: null
 
 consistency:
@@ -70,3 +72,4 @@ notes:
   - Daily loss is 5% of the prior day's closing equity or balance — verify which applies when they differ.
   - Minimum 3 profitable days — verify whether that is per phase or overall.
   - A visible stop-loss is required on every position.
+  - Reset clock UTC+3 may really be MT5 server midnight (+2 winter / +3 summer, US-DST bounds); verify before purchase.

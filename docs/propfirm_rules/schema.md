@@ -12,8 +12,8 @@ before buying any challenge.
 | `firm`, `program` | string | Identity, e.g. `FTMO`, `2-Step Standard`. |
 | `verify_before_purchase` | bool | Must be present. `true` = values below are unverified transcriptions. |
 | `phases[]` | list | One entry per challenge phase (see below). |
-| `daily_loss` | object | `{pct, basis, measured_on, reset_tz, reset_time}`. `basis` ∈ `initial` / `prior_day_balance` / `prior_day_max_balance_equity`. `measured_on` ∈ `equity` / `balance`. |
-| `max_loss` | object | `{pct, type, trail_basis, lock_at}`. `type` ∈ `static` / `eod_trailing` / `intraday_trailing`. `trail_basis` is a free-text description of what the limit trails (null for static). |
+| `daily_loss` | object | `{pct, pct_of, reference, measured_on, reset_tz, reset_time}`. `pct_of` ∈ `initial` / `reference` (what the allowance is a percentage of); `reference` ∈ `initial` / `reset_balance` / `reset_max_balance_equity` (the level the allowance is subtracted from). `measured_on` ∈ `equity` / `balance`. Unverified rules use the stricter reading. |
+| `max_loss` | object | `{pct, pct_of, type, trail_reference, lock_at}`. `type` ∈ `static` / `eod_trailing` / `intraday_trailing`. `trail_reference` ∈ null / `highest_reset_balance` / `highest_equity`. `lock_at` ∈ null / `initial` (floor stops rising at breakeven). |
 | `consistency` | object | `{best_day_max_pct_of_positive_days}` — null when the program has no best-day rule. |
 | `news` | object | `{evaluation_restricted, funded_window_min}` — whether high-impact-news blackouts apply in evaluation, and the funded window in minutes (±). |
 | `trading_limits` | object | `{weekend_holding, max_requests_per_day, min_hold_seconds}` — each nullable when the rulebook is silent. |
@@ -37,7 +37,13 @@ before buying any challenge.
 ## Validation (`core/propfirm/rules.py`)
 
 `load_rules(path)` returns frozen dataclasses and raises `ValueError` naming the
-file and field on: missing/extra-typed fields, unknown enum values, percentages
-outside (0, 100], negative day counts, malformed `reset_time`, unresolvable
-`reset_tz`, empty `sources`, unknown `modeled_in_sim` keys, or a missing
-`verify_before_purchase` flag.
+file and field on: missing/extra-typed fields, **unknown keys at the top level
+or inside any group** (typos become defaults otherwise), unknown enum values,
+percentages outside (0, 100], negative day counts, malformed `reset_time`,
+unresolvable `reset_tz`, bad `news.funded_window_min` / `trading_limits` types,
+empty `sources`, unknown `modeled_in_sim` keys, or a missing
+`verify_before_purchase` flag. Absent `modeled_in_sim` keys default to `false`.
+
+Floors are pinned by `daily_floor(rules, initial, reference_value)` and
+`max_floor(rules, initial, trail_value)` — pure functions; the running-maximum
+ratchet is the simulator's job.
