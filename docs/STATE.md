@@ -44,24 +44,26 @@ Labels: `ready-for-code`, `in-progress`, `needs-review`, `question`, `research`,
 
 ## 4. Status board
 
-**Phase 0 · Foundation:** ✅ merged (PR #1, 2026-10-05). Default branch = `main`.
+**Phase 0 · Foundation:** ✅ merged (PR #1). Default branch = `main`.
 
 **Phase 1 · Data + evaluator:** 🔄 in progress.
 
 | # | Title | Depends on | Status |
 |---|---|---|---|
-| #2 | [DATA] Full-history pilot + index point verification | — | downloading (single run, pinned 16.62.244.190, atomic .bi5 writes); then convert FX → verify indices → bars → PR |
-| #3 | [PROPFIRM] Rules schema + loader + 3 YAMLs | — | PR #8 approved → merged |
-| #4 | [PROPFIRM] Challenge simulator v0 + MC + demo | #3 | in-progress (amended: LuxAlgo cross-check, ratchet seeding, null-limit = n/a) |
-| #5 | [RESEARCH] Read-only MQL5 inventory | — | in-progress; baseline = SRJ Flow Nexus EA (D-021) |
+| #2 | [DATA] Full-history pilot + index point verification | — | downloading (single run, pinned edge, atomic writes, ~0.3–0.5 files/s, multi-day); then convert FX → verify indices → bars → PR |
+| #3 | [PROPFIRM] Rules schema + loader + 3 YAMLs | — | ✅ merged (PR #8) |
+| #4 | [PROPFIRM] Challenge simulator v0 + MC + demo | #3 | PR #11 needs-review (demo: ours P(pass) 0.70 vs LuxAlgo 1.00, 50 paths; 4 semantics deltas in compare.md) |
+| #5 | [RESEARCH] Read-only MQL5 inventory | — | PR #10 needs-review; 3 open questions for sirooj in the PR |
 | #6 | [CODE] Phase 0 follow-ups | #2 | queued |
-| E | [TOOLS] mcp-mt5 for headless Strategy Tester runs | #5 inventory | to file (D-022) |
+| #9 | [TOOLS] mcp-mt5 + deals → trades converter | #5 | PR #12 needs-review (includes docs/RUNBOOK.md). BLOCKED: tester pass needs ≥5 GB free on C: (now 0.2 GB) |
+
+Known tool quirk: mcp-mt5 compile fails on paths containing spaces; use space-free paths.
 
 ## 5. Next actions
 
-1. **CODER:** merge #8 → start #4; finish #5 inventory; file + do E; keep #2 running; write `docs/RUNBOOK.md`.
-2. **sirooj:** answer the 2 open #5 items (timeframes/sessions of Flow Nexus; any MT5 statement or tester report?). Fill FTMO/The5ers fee tables when convenient.
-3. **PLANNER:** review #4 PR and #5 inventory summary → pick the port scope → draft strategy cards 1–8 as `research/cards/*.md`.
+1. **PLANNER:** review PR #10, #11, #12. Check the #11 0.70-vs-1.00 gap is explained by intra-trade excursion and not by a rule bug; run LuxAlgo with more paths. Then pick the Flow Nexus port scope and draft strategy cards 1–8 in `research/cards/*.md`.
+2. **sirooj:** answer the 3 #5 follow-ups in PR #10: revision baseline, session details, broker statement. Decide on C: space: relocate or prune `opencode.db` (33.6 GB) and the MT5 logs (~1.5 GB/day). Fill the FTMO/The5ers fee tables when convenient.
+3. **CODER:** keep #2 running. Address the review comments on #10, #11 and #12. Run the Flow Nexus tester pass once C: has ≥5 GB free.
 
 ## 6. Hard constraints (from DECISIONS)
 
