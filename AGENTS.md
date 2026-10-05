@@ -1,9 +1,18 @@
 # AGENTS.md — SRJ Ventures relay protocol + working conventions
 
+**Session start: read `docs/STATE.md`, then `docs/DECISIONS.md`.**
+
 This repo is the **only channel** between the cloud orchestrator
-("1 SRJ Ventures Bot", PromptQL) and the local CODER agent running on sirooj's
+(the PromptQL planner bot — its display name can change per PromptQL project)
+and the local CODER agent running on sirooj's
 Windows machine. The orchestrator cannot see this machine. Everything flows
 through **GitHub Issues, PRs, and committed files**.
+
+## 0. Roles (D-019, D-020)
+- **PLANNER** (PromptQL bot): research, specs, reviews, decisions. Owns `docs/STATE.md` and D-entries.
+- **CODER** (OpenCode, this terminal): implement → test → execute → report. Never guess; ask with the `question` label. Merge only when a `Planner review (relayed): APPROVED` comment exists for the current head SHA.
+- **OPERATOR** (sirooj): domain answers, access, fee tables, VPN/machine, final say.
+- Before building a new component, check `docs/DECISIONS.md` D-022 for OSS to reuse.
 
 ## 1. Relay protocol
 
