@@ -1,9 +1,9 @@
 # SRJ Edge Research: STATE (session pointer)
 
 > **Read this first in every edge-research session.** This track is separate from the Flow Nexus track (`docs/STATE.md`). Don't mix them.
-> **Owner:** the RESEARCHER updates this file in every backup relay, and the CODER commits it verbatim.
+> **Owner:** the PLANNER updates this file and delivers it in a relay; the CODER commits it verbatim (E-014).
 
-_Last updated: 2026-10-06 (researcher session 3, PromptQL project "5 SRJ Venture", bot `96b32602-0da2-4e37-8a0d-9f411f3773c5`), backup 02b_
+_Last updated: 2026-10-06 (planner session 4, PromptQL project "6 SRJ Venture", bot `faa09a35-8233-42b5-8b5a-ff8ad462e3ee`), relay WORKFLOW 01_
 
 ---
 
@@ -14,7 +14,8 @@ _Last updated: 2026-10-06 (researcher session 3, PromptQL project "5 SRJ Venture
 @<bot name> Resume SRJ Edge Research. Read research/edge/EDGE_STATE.md (+ research/edge/DECISIONS_EDGE.md, AGENTS.md §5, .opencode/skills/) in sirooj/SRJ-Ventures, then continue from "Next actions". Latest CODER message: <newest CODER message only, if any>
 ```
 
-**RESEARCHER on start:** follow the skill `srj-session-start`.
+- **PLANNER on start:** follow `srj-session-start` and `srj-credit-budget`.
+- **CODER on start:** read `AGENTS.md`, then this file, then the open `ready-for-code` Issues labelled `research`.
 
 ## 2. Track in one paragraph
 
@@ -22,39 +23,51 @@ The goal is a **new** intraday CFD edge for prop-firm challenges, separate from 
 - **Constraints:** the project's hard constraints apply in full (`srj-hard-constraints`, E-002).
 - **Lens:** volume-first is mandatory (D-005, E-004). Every study leads with a bid-tick volume read: Volume Profile, VWAP, tick-rule CVD, or tick-count relative volume.
 - **Style:** scalping is preferred. ≤1H is the chart-timeframe ceiling, not a cap on trade duration (E-003).
-- **Evidence:** Dukascopy data the researcher downloads into its own cloud VM (E-009).
+- **Evidence:** Dukascopy data the CODER downloads and prepares in `SRJ_DATA` on sirooj's machine (E-014). There is no cloud VM.
 - **Scoring:** prop-firm challenge rules, not Sharpe (D-004).
 
-## 3. Roles
+## 3. Roles (D-023, E-014)
 
 | Role | Who | Does |
 |---|---|---|
-| RESEARCHER | PromptQL bot | Designs and runs studies in its own VM; writes backup relays |
-| CODER | OpenCode on sirooj's machine | Commits relays verbatim; opens and merges backup PRs (E-005) |
-| OPERATOR | sirooj | Manually orchestrates between the two; domain answers; final say |
+| PLANNER | PromptQL bot | Designs studies (cards, addenda, kill criteria), writes relays, reviews CODER reports, records verdicts. Never runs a VM. |
+| CODER | OpenCode on sirooj's machine | Downloads and prepares data, writes and runs study scripts, writes the results files and the CODER report. Merges `research/edge/**` PRs once checks pass (E-005, E-014). |
+| OPERATOR | sirooj | "go" or redirect; carries relays and reports; domain answers; final say |
 
-GitHub is connected in PromptQL projects "4 SRJ Venture" and "5 SRJ Venture" through sirooj's account. The researcher uses it **read-only**. Writes go through the CODER.
+GitHub is connected in PromptQL projects "4 SRJ Venture" to "6 SRJ Venture" through sirooj's account. The planner uses it **read-only**. Writes go through the CODER.
 
 ## 4. Study log
 
 | # | Study | Status | Result | Report |
 |---|---|---|---|---|
 | 01 | US index open scalping on NAS100/US500: ORB, ORB fade, Gao intraday momentum | done 2026-10-05 | **Null.** No edge larger than about 0.13R per trade; 0 FTMO passes (E-008) | `studies/01_us_open_scalping/REPORT.md` |
-| 02 | NY open on unusual days, read through volume structure | **step 1 done** 2026-10-06: card locked (E-010), points verified (E-011), codification fixed (E-012); step 2 not started | **F1–F6 null** (0/336 survive). **F7 80% rule, open above prior value: survives** on NAS100 and US500 at both 11:30 and 16:00. Open below value: fails (E-013) | `studies/02_open_unusual_days/CARD.md`, `studies/02_open_unusual_days/STEP1_RESULTS.md` |
+| 02 | NY open on unusual days, read through volume structure | **step 1 done** 2026-10-06 and backed up (PR #15, `c7ed9b8`): card locked (E-010), points verified (E-011), codification fixed (E-012); step 2 not started | **F1–F6 null** (0/336 survive). **F7 80% rule, open above prior value: survives** on NAS100 and US500 at both 11:30 and 16:00. Open below value: fails (E-013) | `studies/02_open_unusual_days/CARD.md`, `studies/02_open_unusual_days/STEP1_RESULTS.md` |
 
-**Lost:** session 1's scripts (`cost_map.py`, `orb.py`, `diag.py`) and its draft state and decision files lived only on that bot's VM. They were never pushed. Session 2's first drafts of `build_bars.py` and `step1.py` were lost the same way; session 3 re-wrote them, and they are pushed in backup 02b. E-006 exists to stop this from happening again.
+**Lost (VM era):**
+- Session 1's scripts (`cost_map.py`, `orb.py`, `diag.py`) and its draft state and decision files lived only on that bot's VM. They were never pushed.
+- Session 2's first drafts of `build_bars.py` and `step1.py` were lost the same way. Session 3 re-wrote them and pushed them in backup 02b.
+
+E-006 was written to stop this. Since E-014, all compute runs on sirooj's machine, so there is no VM to lose.
 
 ## 5. Next actions
 
-1. **CODER:** commit backup 02b and report the PR number and merge SHA.
-2. **OPERATOR:** say "go step 2" or redirect. Proposed step-2 scope: **F7 from above value only** (E-013).
-3. **RESEARCHER, before fitting anything in step 2:**
-   - Verify the NYSE holidays, half-days and FOMC dates hard-coded in `scripts/step1.py` against an official source. If any date is wrong, re-run step 1 and record the difference in a new E-entry.
-   - Build a US high-impact news calendar for the ±5 min blackout (the card's step-1 approximation is not enough for step 2).
-   - Write a step-2 addendum to CARD.md before touching data: entry at acceptance, visible SL, targets (VAL / partial), every configuration counted. Fit on IS only.
-   - OOS 2025-07-01 → 2026-09-30 has now been used once, to select F7. Reserve data from 2026-10-01 onwards as a fresh forward holdout (E-013).
-4. **If the researcher's VM is lost:** re-create everything from the pushed scripts. Provision ≥15 GB disk. Run `pilot_download.py USATECHIDXUSD,USA500IDXUSD 2022-11-15 2026-09-30 4`, which takes about 2.5 h because Dukascopy throttles; then run one 1-worker fill per symbol. Then run `build_bars.py <SYM> 2022-11 2026-09` per symbol, then `step1.py --sample IS`, then `--sample OOS`.
-5. **OPERATOR (optional, Flow Nexus track):** E-011's point evidence could let `config/instruments.yaml` mark both indices `point_verified: true`. That file is shared infrastructure, so it changes only through the planner/CODER track, not through an edge backup.
+1. **CODER:** commit relay WORKFLOW 01, file Issues B1–B3 from it, and report.
+2. **CODER (study 02 prep, no fitting; can start now):**
+   - **B1:** rebuild the study-02 data in `SRJ_DATA` and reproduce step 1 locally. Results must match `c7ed9b8`.
+   - **B2:** verify the NYSE holidays, half-days and FOMC dates hard-coded in `scripts/step1.py`.
+   - **B3:** build the US high-impact news calendar for the ±5 min blackout.
+3. **OPERATOR:** say "go step 2" or redirect. Proposed step-2 scope: **F7 from above value only** (E-013).
+4. **PLANNER, after "go" and the B1–B3 reports:**
+   - If B2 found a wrong date, first record the re-run's difference in an E-entry.
+   - Before anyone touches step-2 data, write the step-2 addendum to CARD.md:
+     - entry at acceptance,
+     - visible SL,
+     - targets (VAL / partial),
+     - every configuration counted,
+     - fit on IS only.
+   - Relay it; the CODER runs it.
+5. **Forward holdout:** OOS 2025-07-01 → 2026-09-30 has been used once, to select F7. Data from 2026-10-01 onward is the fresh forward holdout (E-013). No study run touches it until the planner says so.
+6. **OPERATOR (optional, Flow Nexus track):** E-011's point evidence could let `config/instruments.yaml` mark both indices `point_verified: true`. That file is shared infrastructure, so it changes only through the Flow Nexus track (D-020), not through an edge PR.
 
 ## 6. Study 02 design
 
