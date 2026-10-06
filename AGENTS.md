@@ -1,35 +1,48 @@
 # AGENTS.md — SRJ Ventures relay protocol + working conventions
 
-**Session start: read `docs/STATE.md`, then `docs/DECISIONS.md`.**
+**Session start: follow the skill `srj-session-start`.** It tells you which track pointer (`docs/STATE.md` or `research/edge/EDGE_STATE.md`) and decisions log to read.
 
-This repo is the **only channel** between the cloud orchestrator
-(the PromptQL planner bot — its display name can change per PromptQL project)
-and the local CODER agent running on sirooj's
-Windows machine. The orchestrator cannot see this machine. Everything flows
+This repo is the **only channel** between the cloud PLANNER (the PromptQL bot — its display name changes per PromptQL project)
+and the local CODER agent running on sirooj's Windows machine. The planner cannot see this machine. Everything flows
 through **GitHub Issues, PRs, and committed files**.
 
-## 0. Roles (D-019, D-020)
-- **PLANNER** (PromptQL bot): research, specs, reviews, decisions. Owns `docs/STATE.md` and D-entries.
-- **CODER** (OpenCode, this terminal): implement → test → execute → report. Never guess; ask with the `question` label. Merge only when a `Planner review (relayed): APPROVED` comment exists for the current head SHA.
-- **OPERATOR** (sirooj): domain answers, access, fee tables, VPN/machine, final say.
+## 0. Roles (D-019, D-023)
+
+The PLANNER directs, the CODER builds and computes, and the OPERATOR approves. **All data and all compute live on sirooj's machine.** The planner never runs a cloud VM, so that PromptQL credit lasts (D-023).
+
+- **PLANNER** (PromptQL bot): director of both tracks.
+  - Plans and writes specs, study cards and relays; reviews PR reports; decides.
+  - Owns the track pointers (`docs/STATE.md`, `research/edge/EDGE_STATE.md`) and the D-/E-entries.
+  - Does not download data, run studies or backtests, or provision a VM. Follows `srj-credit-budget`.
+- **CODER** (OpenCode, this terminal): builder and executor.
+  - Implements, downloads and prepares data in `SRJ_DATA`, runs tests, studies and backtests, and reports.
+  - Never guesses; asks with the `question` label.
+  - Proposes verdicts with numbers; the planner records the decision.
+- **OPERATOR** (sirooj): "go" or redirect, domain answers, access, fee tables, VPN/machine, and the final say.
+  - Carries planner relays to the CODER and the CODER's newest report back, until the PromptQL GitHub App can write to the repo (D-015).
 - Before building a new component, check `docs/DECISIONS.md` D-022 for OSS to reuse.
 
-## 1. Relay protocol
+## 1. Relay protocol (both tracks; skill `srj-relay`)
 
-- Issues labelled **`ready-for-code`** are tasks from the orchestrator. Only work
-  on those (or explicit `research`/`data` requests).
-- To pick one up:
-  1. Comment `picked up` on the Issue.
-  2. Swap the label `ready-for-code` → `in-progress`.
-  3. Create a branch `issue-<n>-<slug>` and do the work there.
-- **Definition of done** (all required before review):
-  - code and tests pass: `uv run pytest` (and `uv run ruff check .`)
-  - outputs are written to `results/<id>/` (small files only, < 1 MB each)
-  - a PR is opened with `Closes #<n>`, a summary of metrics, assumptions, and
-    open questions, with label **`needs-review`**
-- If the trading logic is ambiguous, **don't guess**. Comment on the Issue and
-  add the label **`question`**.
-- Labels in use: `ready-for-code`, `in-progress`, `needs-review`, `question`,
+1. The PLANNER writes a relay titled `RELAY: <FLOW|EDGE|WORKFLOW> <NN>, <slug>`. sirooj pastes it to the CODER whole.
+2. The CODER commits the relay's files verbatim and files its tasks as Issues verbatim (D-015). Labels: `ready-for-code`, plus `research`/`data` where the relay gives them. Only work on those, or on explicit operator requests.
+3. To pick an Issue up:
+   1. Comment `picked up` on the Issue.
+   2. Swap the label `ready-for-code` → `in-progress`.
+   3. Create a branch `issue-<n>-<slug>` and do the work there.
+4. **Definition of done** (all required before review):
+   - Code and tests pass: `uv run pytest` and `uv run ruff check .`.
+   - Outputs are written to `results/<id>/` or the study's `results/` folder (small files only, < 1 MB each).
+   - A PR is opened with:
+     - `Closes #<n>`,
+     - the label **`needs-review`** (edge track: **`research`**),
+     - a **CODER report** in the PR body (`srj-relay`). The report is what the planner reviews.
+5. If the trading logic is ambiguous, **don't guess**. Comment on the Issue and add the label **`question`**.
+6. **Merges:**
+   - **Default (D-020):** merge only when a `Planner review (relayed): APPROVED` comment exists for the PR's current head SHA.
+   - **Planner relay committed verbatim**, touching only `research/edge/**` and `.opencode/skills/**`: the CODER merges once checks pass. sirooj's paste is the approval (E-005).
+   - **CODER-produced edge work**, touching only `research/edge/**`: the CODER merges once checks pass. The planner reviews the report at its next session and corrects anything through a new E-entry (E-014).
+7. Labels in use: `ready-for-code`, `in-progress`, `needs-review`, `question`,
   `research`, `data`.
 
 ## 2. Machine conventions (Windows, D: drive — C: is nearly full)
@@ -46,6 +59,7 @@ through **GitHub Issues, PRs, and committed files**.
 
 ## 3. Data conventions
 
+- Both tracks share one dataset under `SRJ_DATA`. The CODER downloads and prepares it (skill `srj-local-data`).
 - **Bid-side by default** for price and volume analysis on CFDs (sirooj's
   convention). Keep the ask side only for spread and cost modelling.
 - All timestamps in **UTC** internally. Sessions are defined with `zoneinfo`
@@ -63,25 +77,29 @@ New symbols / longer history: download a small pilot first, report disk usage
 per symbol-year, then scale. Don't re-download what already exists — check
 `SRJ_DATA` and sirooj's existing archives first.
 
-## 5. Tracks, session start, skills (E-001, E-007)
+## 5. Tracks, session start, skills (E-001, E-007, D-023)
 
-This repo runs **two independent tracks**. A session works on exactly one of them.
+This repo runs **two independent tracks**. A session works on exactly one of them. The PromptQL bot is the PLANNER on both.
 
-| Track | Pointer (read first) | Decisions | PromptQL bot's role |
+| Track | Resume line | Pointer (read first) | Decisions |
 |---|---|---|---|
-| Flow Nexus port + infrastructure (Phase 0–1) | `docs/STATE.md` | `docs/DECISIONS.md` (D-xxx) | PLANNER |
-| Edge research (new edges, separate from Flow Nexus) | `research/edge/EDGE_STATE.md` | `research/edge/DECISIONS_EDGE.md` (E-xxx) | RESEARCHER |
+| Flow Nexus port + infrastructure (Phase 0–1) | "Resume SRJ Ventures" | `docs/STATE.md` | `docs/DECISIONS.md` (D-xxx) |
+| Edge research (new edges, separate from Flow Nexus) | "Resume SRJ Edge Research" | `research/edge/EDGE_STATE.md` | `research/edge/DECISIONS_EDGE.md` (E-xxx) |
 
-- **RESEARCHER** (PromptQL bot, edge track): designs and runs studies in its own cloud VM, on Dukascopy data it downloads itself. It never needs the D: drive. Its GitHub writes go through the CODER as backup relays.
-- The resume line names the track. If it doesn't, ask the operator one question before doing anything.
-- Never act on the other track (reviews, relays, STATE edits) unless the operator asks.
-- PromptQL bot display names change per project ("3 SRJ Venture Bot", "4 SRJ Venture Bot", …). Refer to roles, not names.
+- The resume line names the track. Ask the operator one question before doing anything if:
+  - the resume line doesn't name a track, or
+  - the CODER message belongs to the other track.
+- Exception: an operator instruction that clearly spans both tracks, such as a workflow change. Say so and proceed.
+- Never act on the other track (reviews, relays, pointer edits) unless the operator asks.
+- PromptQL bot display names change per project ("5 SRJ Venture Bot", "6 SRJ Venture Bot", …). Refer to roles, not names.
 
 Skills live in `.opencode/skills/<name>/SKILL.md`. Any agent can also read them directly as files.
 
-| Skill | Use when |
-|---|---|
-| `srj-session-start` | First thing in any session, in either role |
-| `srj-hard-constraints` | Before proposing, coding, testing or approving any strategy, and before any commit |
-| `srj-edge-study` | Designing, running or reporting an edge study |
-| `srj-research-backup` | After every study and at session end, when writing or executing a backup relay |
+| Skill | Who | Use when |
+|---|---|---|
+| `srj-session-start` | both | First thing in any session |
+| `srj-credit-budget` | PLANNER | Every planner session. Also before running code, reading many files, or anything that needs compute |
+| `srj-hard-constraints` | both | Before proposing, coding, testing or approving any strategy, and before any commit |
+| `srj-relay` | both | Writing, executing or reporting on a relay (replaces `srj-research-backup`) |
+| `srj-local-data` | CODER | Before any download, conversion or bar build |
+| `srj-edge-study` | both | Designing (PLANNER) or running (CODER) an edge study |
