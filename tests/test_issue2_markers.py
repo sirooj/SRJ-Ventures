@@ -66,3 +66,22 @@ def test_main_no_convert_skips_conversion(monkeypatch, tmp_path):
     dk.main(["download", "--symbols", "EURUSD",
              "--start", "2026-01-01", "--end", "2026-01-02", "--no-convert"])
     assert converted == []
+
+
+def test_healthy_first_prefers_serving_edge(monkeypatch):
+    """TCP-alive 503 edges must sort behind edges that serve (200/404)."""
+    import httpx as _httpx
+
+    calls = {"n": 0}
+
+    def fake_probe_get(url, **kwargs):
+        # _healthy_first probes IPs in list order: first gets 503, rest 404.
+        calls["n"] += 1
+        if calls["n"] == 1:
+            return _httpx.Response(503)
+        return _httpx.Response(404)
+
+    monkeypatch.setattr(dk.httpx, "get", fake_probe_get)
+    ranked = dk._healthy_first(["10.0.0.9", "10.0.0.1", "10.0.0.2"])
+    assert ranked[0] in ("10.0.0.1", "10.0.0.2")  # 503 edge sinks
+    assert ranked[-1] == "10.0.0.9"

@@ -80,16 +80,29 @@ def doh_ips(host: str, timeout: float = 15.0) -> list[str]:
     return []
 
 
-def _healthy_first(ips: list[str], port: int = 443, timeout: float = 3.0) -> list[str]:
-    """Order IPs with a fast TCP handshake first (one edge is often dead)."""
-    good, bad = [], []
+def _healthy_first(ips: list[str], timeout: float = 8.0) -> list[str]:
+    """Rank edges by a real HTTPS probe (TCP alone can't see 503s).
+
+    Probes a Saturday hour (expect 404 = edge serves correctly) through each IP
+    with SNI/TLS intact. Healthy edges come first ordered by latency; refused
+    edges go last. A TCP-only check passes dead edges that answer handshakes
+    but 503 every request — this cost us a ~6h near-zero run on 2026-10-06.
+    """
+    probe_dt = datetime(2023, 1, 7, 12, tzinfo=timezone.utc)  # Saturday
+    scored: list[tuple[tuple[int, float], str]] = []
     for ip in ips:
+        uninstall = install_resolve_override(FEED_HOST, [ip])
         try:
-            with socket.create_connection((ip, port), timeout=timeout):
-                good.append(ip)
-        except OSError:
-            bad.append(ip)
-    return good + bad
+            t = time.time()
+            r = httpx.get(build_url("EURUSD", probe_dt), timeout=timeout,
+                          headers={"User-Agent": "SRJ-Ventures-research/0.1"})
+            ok = r.status_code in (200, 404)
+            scored.append(((0 if ok else 1, time.time() - t), ip))
+        except httpx.HTTPError:
+            scored.append(((1, float("inf")), ip))
+        finally:
+            uninstall()
+    return [ip for _, ip in sorted(scored)]
 
 
 _real_getaddrinfo = socket.getaddrinfo
