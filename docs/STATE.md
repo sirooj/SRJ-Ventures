@@ -3,7 +3,7 @@
 > **Read this first in every new session**, whether you are the PromptQL planner or the OpenCode coder. It is the single source of truth for "where are we". History lives in git, decisions live in `docs/DECISIONS.md`, and the long-term domain context lives in `docs/WIKI_SEED.md` and the PromptQL wiki.
 > **Owner of this file:** the PLANNER updates it at the end of every session and delivers it in a relay. The CODER may fix numbers or facts and must note that in the PR.
 
-_Last updated: 2026-10-06 (planner session 3, PromptQL project "6 SRJ Venture", bot `faa09a35-8233-42b5-8b5a-ff8ad462e3ee`): workflow revision D-023; status board refreshed from open PRs_
+_Last updated: 2026-10-10 (planner workflow session, PromptQL project "6 SRJ Venture", bot `15269cb1-95b2-4c4f-b429-fcc7ea935588`): workflow v2, D-024 (relay WORKFLOW 02); status board refreshed from open issues_
 
 ---
 
@@ -18,7 +18,8 @@ _Last updated: 2026-10-06 (planner session 3, PromptQL project "6 SRJ Venture", 
 1. Read the `SRJ Ventures` wiki page. If it doesn't exist (new project), seed it from `docs/WIKI_SEED.md` with a learning block.
 2. In one program run, fetch from GitHub (`__github` integration):
    - `docs/STATE.md` and `docs/DECISIONS.md`,
-   - the titles of open issues and open PRs.
+   - the titles of open issues and open PRs,
+   - `research/funnel/queue.md`, once the funnel has run.
    Never provision a VM (D-023).
 3. Continue from §5 "Next actions". Never re-decide anything listed in DECISIONS.md without a new D-entry.
 4. At session end:
@@ -35,18 +36,18 @@ _Last updated: 2026-10-06 (planner session 3, PromptQL project "6 SRJ Venture", 
 
 ## 2. Project in one paragraph
 
-An agentic research → code → test loop that produces intraday CFD strategies (≤1H, mostly ≤15m) built to **pass prop-firm challenges**. A challenge is a capped-fee option on funded capital. The bias is volume-first: Volume Profile, VWAP, and CVD on Dukascopy bid ticks; other edges are allowed. Every strategy is scored by a **challenge simulator** (P(pass), days-to-pass, EV per fee), not by Sharpe.
+An agentic research → code → test loop that produces intraday CFD strategies (≤1H, mostly ≤15m) built to **pass prop-firm challenges**. A challenge is a capped-fee option on funded capital. The bias is volume-first: Volume Profile, VWAP, and CVD on Dukascopy bid ticks; other edges are allowed. Every strategy is scored by a **challenge simulator** (P(pass), days-to-pass, EV per fee), not by Sharpe. New ideas arrive through the CODER's **Idea Funnel**, and the planner promotes the best to locked study cards (D-024).
 
-## 3. Roles & bridge (D-019, D-023)
+## 3. Roles & bridge (D-019, D-023, D-024)
 
 | Role | Who | Where |
 |---|---|---|
 | PLANNER (director: plans, specs, reviews, decides) | PromptQL bot | cloud; can't see D: drive; never runs a VM |
-| CODER (builder: code, all data download and compute, reports) | OpenCode, in sirooj's Windows terminal | `D:\SRJ Venture` (repo + data, `SRJ_DATA`) |
+| CODER (builder: code, all data download and compute, web research, Idea Funnel, reports) | OpenCode, in sirooj's Windows terminal | `D:\SRJ Venture` (repo + data, `SRJ_DATA`) |
 | OPERATOR (approvals, domain answers, final say) | sirooj | carries relays and CODER reports between the two |
 | Bridge | GitHub relay on `sirooj/SRJ-Ventures` | Issues (`ready-for-code`) → `issue-<n>-<slug>` branch → PR `Closes #n` + `needs-review` + CODER report → planner review → merge |
 
-Labels: `ready-for-code`, `in-progress`, `needs-review`, `question`, `research`, `data`.
+Labels: `ready-for-code`, `in-progress`, `needs-review`, `question`, `research`, `data`, `execution-critical`.
 **Known blocker:** the PromptQL GitHub App isn't installed on the repo, so planner writes return 403. Until it is fixed, the planner drafts and the CODER files verbatim (D-015).
 
 ## 4. Status board
@@ -64,21 +65,35 @@ Labels: `ready-for-code`, `in-progress`, `needs-review`, `question`, `research`,
 | #6 | [CODE] Phase 0 follow-ups | #2 | queued (`ready-for-code`) |
 | #9 | [TOOLS] mcp-mt5 for headless Strategy Tester runs + deals export | #5 inventory | PR #12 `needs-review` (D-022) |
 
+**Workflow v2 · Reuse + funnel (D-024):** 🆕 to be filed from relay WORKFLOW 02.
+
+| # | Title | Depends on | Status |
+|---|---|---|---|
+| W1 | [TOOLS][FUNNEL] Idea Funnel scaffold + validator | W2 for rungs 2–3 | to file (`ready-for-code`) |
+| W2 | [TOOLS] research-web ladder: install + smoke test | — | to file (`ready-for-code`) |
+| W3 | [TOOLS][BACKTEST] Engine spike: vectorbt + NautilusTrader vs study 01 | NAS100 bars for study 01's IS window (#17 / #2) | to file (`ready-for-code`) |
+| W4 | [RESEARCH][EDGE] Back-fill `TRIALS.csv` | — | edge track; see `research/edge/EDGE_STATE.md` |
+
 ## 5. Next actions
 
 1. **CODER:**
-   - Commit relay WORKFLOW 01 and report.
+   - Commit relay WORKFLOW 02 (and WORKFLOW 01, if it is still uncommitted), file W1–W4, and report.
+   - Create the label `execution-critical`.
    - Keep #2 running.
-   - Add a CODER report (`srj-relay`) to the bodies of PRs #10, #11 and #12 if they don't have one.
-   - Write `docs/RUNBOOK.md`.
-   - Start #6 once #2 lands.
+   - Add a CODER report in Evidence order (`srj-relay`) to the bodies of PRs #10, #11 and #12 if they don't have one.
+   - Write `docs/RUNBOOK.md`, now including the research-web setup and the funnel command.
+   - Order: W2 → W1 → W3 (once its data exists). Start #6 once #2 lands.
 2. **sirooj:**
+   - Optional: get a DeepAPI key (deepapi.co) and save it under `D:\SRJ Venture\.secrets\`. The weekly cap is $3 (D-024). Without a key, the funnel uses curated sources only.
+   - Edit `research/funnel/SOURCES.md`: add trusted authors and accounts, and remove noisy sources.
    - Answer any still-open #5 items: the timeframes/sessions of Flow Nexus, and whether there is any MT5 statement or tester report.
    - Fill the FTMO/The5ers fee tables when convenient.
 3. **PLANNER:**
    1. Review PRs #11, #10 and #12 from their CODER reports.
-   2. Pick the port scope.
-   3. Draft strategy cards 1–8 as `research/cards/*.md`.
+   2. Review the W1–W3 reports and update the verdicts in `docs/TOOLING.md`.
+   3. Each session, once the funnel has run: read `research/funnel/queue.md` and promote, park or reject (`srj-idea-funnel`).
+   4. Pick the port scope.
+   5. Draft strategy cards 1–8 as `research/cards/*.md`.
 
 ## 6. Hard constraints (from DECISIONS)
 
@@ -89,9 +104,12 @@ Labels: `ready-for-code`, `in-progress`, `needs-review`, `question`, `research`,
 ## 7. Pointers
 
 - Blueprint v0.2: `docs/architecture.md`
+- Reuse registry: `docs/TOOLING.md` (D-022, D-024)
+- Idea Funnel: `research/funnel/` (`srj-idea-funnel`); trial ledger: `research/edge/TRIALS.csv` (E-016)
 - Prop-firm shortlist: FTMO + The5ers primary; E8 Markets + Blue Guardian secondary (D-009)
-- Workflow: the planner directs and the CODER computes; no cloud VM (D-023). Skills: `.opencode/skills/` (AGENTS §5).
+- Workflow: the planner directs and the CODER computes; no cloud VM (D-023); reuse before build, funnel and research-web (D-024). Skills: `.opencode/skills/` (AGENTS §5).
 - PromptQL bots:
   - session 1 = "1 SRJ Ventures Bot" (previous project)
   - session 2 = `https://prompt.ql.app/project/p-133b1b19-6e80/promptql-playground/thread/9d8237ea-fdb3-4d6f-b8bb-dc1c0b32311b`
   - session 3 (workflow revision) = `https://prompt.ql.app/project/p-bfb8eb54-4272/promptql-playground/thread/faa09a35-8233-42b5-8b5a-ff8ad462e3ee`
+  - workflow v2 = `https://prompt.ql.app/project/p-bfb8eb54-4272/promptql-playground/thread/15269cb1-95b2-4c4f-b429-fcc7ea935588`
