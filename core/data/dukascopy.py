@@ -12,8 +12,10 @@ Int prices are divided by a per-instrument ``point`` value from
 ``config/instruments.yaml`` — verified empirically, never assumed.
 
 Downloader behaviour: resume-safe (skips existing files), retries with
-exponential backoff, polite concurrency (<= 6 parallel requests), failed
-hours logged to a CSV under ``$SRJ_DATA/dukascopy/``.
+exponential backoff (--retries, default 5; lower = fail fast to the failures
+CSV for a later pass when the feed 503s), polite concurrency
+(<= 6 parallel requests), failed hours logged to a CSV under
+``$SRJ_DATA/dukascopy/``.
 
 Usage::
 
@@ -232,7 +234,8 @@ def fetch_hour(
     raise last
 
 
-def _fetch_and_store(client: httpx.Client, symbol: str, dt: datetime) -> str:
+def _fetch_and_store(client: httpx.Client, symbol: str, dt: datetime,
+                     retries: int = 5) -> str:
     """Fetch one hour and store the raw .bi5 (or an .empty marker).
 
     Returns: stored / exists / empty / failed is counted by the caller.
@@ -242,7 +245,7 @@ def _fetch_and_store(client: httpx.Client, symbol: str, dt: datetime) -> str:
     path = raw_bi5_path(symbol, dt.year, month0(dt), dt.day, dt.hour)
     if path.exists() or raw_empty_path(symbol, dt.year, month0(dt), dt.day, dt.hour).exists():
         return "exists"
-    payload = fetch_hour(client, symbol, dt)
+    payload = fetch_hour(client, symbol, dt, retries)
     path.parent.mkdir(parents=True, exist_ok=True)
     if not payload:  # None (404) or empty body — nothing to store
         raw_empty_path(symbol, dt.year, month0(dt), dt.day, dt.hour).write_bytes(b"")
@@ -270,14 +273,17 @@ def download_range(
     start: datetime,
     end: datetime,
     max_workers: int = MAX_WORKERS,
+    retries: int = 5,
     now: datetime | None = None,
 ) -> dict:
     """Download every hour in [start, end) for each symbol.
 
     Resume-safe: existing files *and* `.empty` markers are skipped; hours that
     may still be partial (ending after ``now − 1h``) are excluded and counted
-    as ``skipped``. Returns a stats dict and writes failed hours (exceptions
-    after retries) to a CSV under ``$SRJ_DATA``.
+    as ``skipped``. ``retries`` bounds the attempts per hour before it is
+    logged to the failures CSV for a later pass — pass a low value to fail
+    fast when the feed 503s. Returns a stats dict and writes failed hours
+    (exceptions after retries) to a CSV under ``$SRJ_DATA``.
     """
     hours = fresh_hours(list(hour_range(start, end)),
                         now or datetime.now(timezone.utc))
@@ -289,7 +295,7 @@ def download_range(
     with httpx.Client(headers={"User-Agent": "SRJ-Ventures-research/0.1"}) as client:
         with ThreadPoolExecutor(max_workers=max_workers) as pool:
             futs = {
-                pool.submit(_fetch_and_store, client, sym, dt): (sym, dt)
+                pool.submit(_fetch_and_store, client, sym, dt, retries): (sym, dt)
                 for sym in symbols
                 for dt in hours
             }
@@ -377,6 +383,10 @@ def main(argv: list[str] | None = None) -> None:
     dl.add_argument("--start", required=True, help="YYYY-MM-DD (UTC, inclusive)")
     dl.add_argument("--end", required=True, help="YYYY-MM-DD (UTC, inclusive)")
     dl.add_argument("--workers", type=int, default=MAX_WORKERS)
+    dl.add_argument("--retries", type=int, default=5,
+                    help="attempts per hour before logging it to the failures "
+                         "CSV for a later pass (lower = fail fast when the "
+                         "feed 503s; default: 5)")
     dl.add_argument("--point", type=float, default=None,
                     help="override point value for all symbols (probing)")
     dl.add_argument("--resolve", default=None, metavar="IP|auto",
@@ -409,7 +419,8 @@ def main(argv: list[str] | None = None) -> None:
             uninstall = install_resolve_override(FEED_HOST, ips)
             print(f"pinned {FEED_HOST} -> {ips}")
         try:
-            stats = download_range(symbols, start, end, args.workers)
+            stats = download_range(symbols, start, end, args.workers,
+                                   retries=args.retries)
         finally:
             if uninstall:
                 uninstall()
