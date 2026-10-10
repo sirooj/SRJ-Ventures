@@ -14,13 +14,15 @@ The PLANNER directs, the CODER builds and computes, and the OPERATOR approves. *
   - Plans and writes specs, study cards and relays; reviews PR reports; decides.
   - Owns the track pointers (`docs/STATE.md`, `research/edge/EDGE_STATE.md`) and the D-/E-entries.
   - Does not download data, run studies or backtests, or provision a VM. Follows `srj-credit-budget`.
+  - Reviews the Idea Funnel queue (`research/funnel/queue.md`) once per session and promotes, parks or rejects candidates (`srj-idea-funnel`).
 - **CODER** (OpenCode, this terminal): builder and executor.
   - Implements, downloads and prepares data in `SRJ_DATA`, runs tests, studies and backtests, and reports.
+  - Runs the Idea Funnel and web research locally (`srj-idea-funnel`, `srj-research-web`).
   - Never guesses; asks with the `question` label.
-  - Proposes verdicts with numbers; the planner records the decision.
+  - Reports evidence first and proposes a verdict last; the planner records the decision.
 - **OPERATOR** (sirooj): "go" or redirect, domain answers, access, fee tables, VPN/machine, and the final say.
   - Carries planner relays to the CODER and the CODER's newest report back, until the PromptQL GitHub App can write to the repo (D-015).
-- Before building a new component, check `docs/DECISIONS.md` D-022 for OSS to reuse.
+- **Reuse before build (D-022, D-024):** before building a new component, check `docs/TOOLING.md`. Every relay task that builds something carries an `OSS check:` line. A tool is adopted only after it reproduces a known in-house result.
 
 ## 1. Relay protocol (both tracks; skill `srj-relay`)
 
@@ -36,19 +38,21 @@ The PLANNER directs, the CODER builds and computes, and the OPERATOR approves. *
    - A PR is opened with:
      - `Closes #<n>`,
      - the label **`needs-review`** (edge track: **`research`**),
-     - a **CODER report** in the PR body (`srj-relay`). The report is what the planner reviews.
-5. If the trading logic is ambiguous, **don't guess**. Comment on the Issue and add the label **`question`**.
+     - a **CODER report** in the PR body, in Evidence order (`srj-relay`). The report is what the planner reviews.
+5. If the trading logic is ambiguous, **don't guess**. Comment on the Issue and add the label **`question`**. If the same task fails twice, escalate the same way (`srj-relay`).
 6. **Merges:**
    - **Default (D-020):** merge only when a `Planner review (relayed): APPROVED` comment exists for the PR's current head SHA.
    - **Planner relay committed verbatim**, touching only `research/edge/**` and `.opencode/skills/**`: the CODER merges once checks pass. sirooj's paste is the approval (E-005).
    - **CODER-produced edge work**, touching only `research/edge/**`: the CODER merges once checks pass. The planner reviews the report at its next session and corrects anything through a new E-entry (E-014).
+   - **Idea Funnel runs**, touching only `research/funnel/**`: the CODER merges once the validator and checks pass (D-024).
+   - **`execution-critical`** PRs (order placement, sizing, SL/TP, risk limits, prop-firm rule enforcement): D-020, plus a line-by-line planner review of the diff.
 7. Labels in use: `ready-for-code`, `in-progress`, `needs-review`, `question`,
-  `research`, `data`.
+  `research`, `data`, `execution-critical`.
 
 ## 2. Machine conventions (Windows, D: drive — C: is nearly full)
 
 - Repo lives at `D:\SRJ Venture\SRJ-Ventures` (quote the path — it has a space).
-- Everything lives on D:, including data, venvs, caches, Python installs:
+- Everything lives on D:, including data, venvs, caches, Python installs, and browser binaries for web research:
   - `SRJ_ROOT = D:\SRJ Venture`
   - `SRJ_DATA = D:\SRJ Venture\data`
   - `UV_CACHE_DIR = D:\SRJ Venture\.cache\uv`
@@ -56,6 +60,7 @@ The PLANNER directs, the CODER builds and computes, and the OPERATOR approves. *
   - `PIP_CACHE_DIR = D:\SRJ Venture\.cache\pip`
 - Code reads data paths from the `SRJ_DATA` env var (see `core/data/paths.py`).
   **Never hardcode paths.**
+- Secrets live in `D:\SRJ Venture\.secrets\`, outside the repo. Private, uncommitted material (MQL5 inventory, saved web sources) lives in `D:\SRJ Venture\private\`.
 
 ## 3. Data conventions
 
@@ -69,7 +74,7 @@ The PLANNER directs, the CODER builds and computes, and the OPERATOR approves. *
   truncated series must equal the prefix of the full-series result).
 - **Never commit data**: ticks, parquet, bars, `.bi5` (see `.gitignore`).
   Commit only code, specs, and small results (JSON/MD/CSV summaries < 1 MB).
-  **Never commit secrets.**
+  **Never commit secrets** or copyrighted source text.
 
 ## 4. Pilot-first rule
 
@@ -77,7 +82,7 @@ New symbols / longer history: download a small pilot first, report disk usage
 per symbol-year, then scale. Don't re-download what already exists — check
 `SRJ_DATA` and sirooj's existing archives first.
 
-## 5. Tracks, session start, skills (E-001, E-007, D-023)
+## 5. Tracks, session start, skills (E-001, E-007, D-023, D-024)
 
 This repo runs **two independent tracks**. A session works on exactly one of them. The PromptQL bot is the PLANNER on both.
 
@@ -92,6 +97,7 @@ This repo runs **two independent tracks**. A session works on exactly one of the
 - Exception: an operator instruction that clearly spans both tracks, such as a workflow change. Say so and proceed.
 - Never act on the other track (reviews, relays, pointer edits) unless the operator asks.
 - PromptQL bot display names change per project ("5 SRJ Venture Bot", "6 SRJ Venture Bot", …). Refer to roles, not names.
+- The Idea Funnel (`research/funnel/`) is not a track. Its candidates enter the edge track only when the planner promotes one to a locked card (E-016).
 
 Skills live in `.opencode/skills/<name>/SKILL.md`. Any agent can also read them directly as files.
 
@@ -103,3 +109,5 @@ Skills live in `.opencode/skills/<name>/SKILL.md`. Any agent can also read them 
 | `srj-relay` | both | Writing, executing or reporting on a relay (replaces `srj-research-backup`) |
 | `srj-local-data` | CODER | Before any download, conversion or bar build |
 | `srj-edge-study` | both | Designing (PLANNER) or running (CODER) an edge study |
+| `srj-research-web` | CODER | Any web research: finding, fetching and saving sources |
+| `srj-idea-funnel` | CODER runs, PLANNER reviews | "run funnel", a scheduled funnel run, or the planner's queue review |

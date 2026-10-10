@@ -3,7 +3,7 @@
 > **Read this first in every edge-research session.** This track is separate from the Flow Nexus track (`docs/STATE.md`). Don't mix them.
 > **Owner:** the PLANNER updates this file and delivers it in a relay; the CODER commits it verbatim (E-014).
 
-_Last updated: 2026-10-06 (planner session 4, PromptQL project "6 SRJ Venture", bot `faa09a35-8233-42b5-8b5a-ff8ad462e3ee`), relay WORKFLOW 01_
+_Last updated: 2026-10-10 (planner workflow session, PromptQL project "6 SRJ Venture", bot `15269cb1-95b2-4c4f-b429-fcc7ea935588`), relay WORKFLOW 02 (E-016)_
 
 ---
 
@@ -68,6 +68,8 @@ E-006 was written to stop this. Since E-014, all compute runs on sirooj's machin
    - Relay it; the CODER runs it.
 5. **Forward holdout:** OOS 2025-07-01 → 2026-09-30 has been used once, to select F7. Data from 2026-10-01 onward is the fresh forward holdout (E-013). No study run touches it until the planner says so.
 6. **OPERATOR (optional, Flow Nexus track):** E-011's point evidence could let `config/instruments.yaml` mark both indices `point_verified: true`. That file is shared infrastructure, so it changes only through the Flow Nexus track (D-020), not through an edge PR.
+7. **CODER (W4, relay WORKFLOW 02):** back-fill `research/edge/TRIALS.csv` from studies 01 and 02 (E-016). From now on, every study PR appends its own rows, and every CODER report states the study's cumulative trial count.
+8. **PLANNER, each session:** once the Idea Funnel has run, read `research/funnel/queue.md` and promote, park or reject (`srj-idea-funnel`). A promoted candidate becomes a new study only through a locked `CARD.md`.
 
 ## 6. Study 02 design
 
