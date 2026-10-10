@@ -1,0 +1,13 @@
+date,idea,hash,rule,reason,source_url
+2026-10-10,Overnight anomaly: hold US indices close-to-open for the overnight drift.,0c6112,no-edge-on-universe,US-indices overnight/intraday divergence stopped in 2008 (Knuteson 2020 Sec. II); absent on our pilot universe.,https://arxiv.org/abs/2010.01727
+2026-10-10,Optimal EOD portfolio execution schedule under time-varying liquidity.,a0f1a4,no-codifiable-rule,"Execution schedule, not a directional entry/exit rule (Min et al. 2018).",https://arxiv.org/abs/1811.05524
+2026-10-10,VWAP optimal execution under stochastic volume (Kato 2014).,02238a,no-codifiable-rule,"Execution benchmark, no directional rule.",https://arxiv.org/abs/1408.6118
+2026-10-10,Guaranteed VWAP pricing under permanent impact (Gueant 2013).,d6cf05,no-codifiable-rule,"Execution pricing, no directional rule.",https://arxiv.org/abs/1306.2832
+2026-10-10,VWAP execution under transient impact (Barzykin 2019).,101900,no-codifiable-rule,"Execution benchmark, no directional rule.",https://arxiv.org/abs/1901.02327
+2026-10-10,Risk-averse VWAP execution with volume uncertainty (Busseti 2015).,d30ef0,no-codifiable-rule,"Execution benchmark, no directional rule.",https://arxiv.org/abs/1509.08503
+2026-10-10,Unconditioned OHLCV momentum signals on MNQ (Mesfin falsification).,0d123b,no-edge-claim,Source itself reports null (14 families fail walk-forward); kept as counter-evidence reference.,https://arxiv.org/abs/2605.04004
+2026-10-10,Five-minute intraday jump prediction from liquidity measures (Kong 2019).,8e7c84,no-codifiable-rule,ML classifier with no codifiable entry/exit rule for a rule grid.,https://arxiv.org/abs/1912.07165
+2026-10-10,Option volume imbalance predicts spot direction (Michael 2022).,c4f578,non-CFD-inputs,Needs options-market-maker volume data we do not have.,https://arxiv.org/abs/2201.09319
+2026-10-10,News-topic model explains overnight returns (Glasserman 2025).,5ddecf,no-codifiable-rule,Needs 2.4M-article news infra; no rule codifiable with our data.,https://arxiv.org/abs/2507.04481
+2026-10-10,Intraday electricity imbalance trading (Aid 2015).,0ea2c2,non-CFD-instruments,Power markets do not port to pilot CFDs.,https://arxiv.org/abs/1501.04575
+2026-10-10,Crypto intraday high-frequency patterns (Petukhina 2020).,61c17e,non-CFD-instruments,Crypto-only; out of scope.,https://arxiv.org/abs/2009.04200
