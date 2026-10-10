@@ -1,0 +1,69 @@
+# FTMO 1-Step — transcribed 2026-10-05, verify before purchase.
+firm: FTMO
+program: 1-Step
+verify_before_purchase: true
+
+phases:
+  - profit_target_pct: 10
+    min_trading_days: 0
+    min_profitable_days: 0
+    time_limit_days: null
+    target_requires_flat: true # target reached with all positions closed
+
+daily_loss:
+  pct: 3
+  pct_of: initial
+  reference: reset_balance
+  measured_on: equity
+  reset_tz: Europe/Prague
+  reset_time: "00:00"
+
+max_loss:
+  pct: 10
+  pct_of: initial
+  type: eod_trailing
+  trail_reference: highest_reset_balance
+  lock_at: null
+
+consistency:
+  best_day_max_pct_of_positive_days: 50
+
+news:
+  evaluation_restricted: false # unstated; assumed unrestricted in evaluation
+  funded_window_min: 0
+
+trading_limits:
+  weekend_holding: null
+  max_requests_per_day: 2000 # same FTMO order-traffic regime assumed; verify
+  min_hold_seconds: null
+
+payout:
+  split_pct: 90
+  split_max_pct: 90
+  first_after_days: null
+  cycle_days: null
+
+fees:
+  fee_by_size: null # sirooj fills it
+  fee_refund: false
+
+banned_behaviors: [HFT, latency arbitrage, cross-account hedging, gap trading]
+
+sources:
+  - {url: https://ftmo.com/en/trading-objectives/, accessed: "2026-10-05"}
+
+modeled_in_sim:
+  daily_loss: true
+  max_loss: true
+  consistency: true
+  news: false
+  min_hold_seconds: true
+  max_requests_per_day: false
+  weekend_holding: false
+  payout: false
+  fees: false
+
+notes:
+  - Daily loss 3% on equity from the 00:00 Prague balance.
+  - EOD trailing max loss: limit = max(highest 00:00 balance, initial) − 10% of initial.
+  - max_requests_per_day 2000 assumes the same FTMO order-traffic regime as the 2-Step; verify.
