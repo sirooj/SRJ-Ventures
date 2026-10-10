@@ -34,7 +34,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [dependency-groups]
-# Optional web-research ladder (skill srj-research-web, issue #21).
+# Optional web-research ladder (skill srj-research-web, issue #21)
+# plus the vault Telegram exporter (issue #26, Telethon, MIT).
 # Core `uv run pytest` must never need this group.
 research = [
   "trafilatura>=1.10",
@@ -44,6 +45,7 @@ research = [
   "youtube-transcript-api>=1.0",
   "yt-dlp>=2025.1",
   "praw>=7.8",
+  "telethon>=1.4",
 ]
 
 [tool.hatch.build.targets.wheel]
