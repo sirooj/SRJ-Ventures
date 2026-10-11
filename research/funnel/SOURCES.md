@@ -35,8 +35,18 @@ Rules for every source:
 | Forex Factory (trading systems threads) | `crawl4ai` (2) | C | leads only; heavy noise |
 | YouTube (volume profile and order-flow educators) | `youtube-transcript-api` (0) | C | larp check on every video. sirooj names the channels |
 | X / Twitter accounts | `vault`; the planner can search X live | C | see "Discovered"; promote after sirooj's review |
-| Discord servers | `vault` (manual) | C | no automation (D-025). sirooj names the servers |
+| Discord servers: ZenomTrader (free tier), PropQuantX (invite in the @PropQuantX bio) | vault (manual) | C | sirooj-named. Free-shared code and threads only, into inbox\discord\<server>\ and inbox\ea_code\<author>\<name>\. Mostly NinjaTrader/futures: port as spec, flag volume_port. No paid/premium material (D-029). |
 | Telegram channels | `vault` (`tg_export.py`, W5) | C | allow-list only; sirooj names the channels |
+
+## Curated: people (sirooj-named, 2026-10-11)
+Handles come from one planner X search (2026-10-11); confirm on first capture.
+| Account | Access | Tier | Notes |
+|---|---|---|---|
+| Kieran Duff (`@kieran__duff`, Substack "The Letter") | vault; Substack `trafilatura` (1) | B (method) | Systematic PM on FX, indices and metals with MT5/MQL5. Sizing, drawdown and overfitting discipline. Disclosed affiliation: works at Darwinex. |
+| PropQuantX (`@PropQuantX`, propquantx.xyz) | vault; site `crawl4ai` (2) | C, B after larp check | Free strategy code with multi-year tests and 1-year OOS curves on futures second data. Futures, not CFD: re-measure on Dukascopy. |
+| ZenomTrader (`@ZenomTrader`) | vault | C | Posts IS/OOS-style tests with costs, but sells a premium Discord and carries prop-firm affiliate codes. Multi-account "prop farming" content is out of scope. |
+| The Milk Man (`@MrMilkTrading`) | vault | C | Mostly options (SPX credit spreads; options-only ideas don't port). Occasional NQ scalping-algo threads with trade counts. |
+| Jan Algo Trader (`@algojan`) | vault | C | Weekly P&L track record. Heavy Roboquant affiliate links. Prop pass-rate claims are never sim inputs. |
 
 ## Curated: seed reading list (tier A unless marked)
 Grouped by the question they answer for this project.
@@ -103,6 +113,8 @@ captured_by: sirooj | tg_export | web_clipper
 licence: unknown | MIT | GPL | proprietary | ...
 ---
 ```
+
+Template: vault\templates\funnel-note.md (Obsidian core plugin "Templates", folder templates).
 
 Capture methods:
 - **Web, X, forums:** Obsidian Web Clipper (browser extension) into `inbox\web\` or `inbox\x\`.
