@@ -1,7 +1,7 @@
 ---
 id: 2026-10-10_NAS100_D1_vvg-filter_76a2a3
 hash: 76a2a3
-status: QUEUED
+status: PARKED
 family: unusual-day-filter
 instrument: NAS100
 timeframe: D1
@@ -14,3 +14,5 @@ created: 2026-10-10
 ---
 Use the VVG premarket classifier to select unusual NAS100 days for intraday study.
 Unverified external claim. Not tested on SRJ data.
+
+Planner verdict (WORKFLOW 04, PARK, tagged for study 02): about 4% of days (roughly 10 a year) is too few trades for a challenge on its own. The 77.6% reversal is measured from the intraday peak, which is not known in real time. All 8 directional configs failed in the source. Revisit after study 02 step 2 as an alternative unusual-day definition; any new configs are counted in TRIALS.csv.
