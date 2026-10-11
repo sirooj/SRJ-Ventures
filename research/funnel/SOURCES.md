@@ -47,6 +47,19 @@ Handles come from one planner X search (2026-10-11); confirm on first capture.
 | ZenomTrader (`@ZenomTrader`) | vault | C | Posts IS/OOS-style tests with costs, but sells a premium Discord and carries prop-firm affiliate codes. Multi-account "prop farming" content is out of scope. |
 | The Milk Man (`@MrMilkTrading`) | vault | C | Mostly options (SPX credit spreads; options-only ideas don't port). Occasional NQ scalping-algo threads with trade counts. |
 | Jan Algo Trader (`@algojan`) | vault | C | Weekly P&L track record. Heavy Roboquant affiliate links. Prop pass-rate claims are never sim inputs. |
+| Concretum Research (`@ConcretumR`) | vault; site `trafilatura` (1) | B | Intraday US futures backtests with code. Gao-family momentum work must pass the E-008 check before queueing. |
+| quantseeker (`@quantseeker`) | vault; papers via OpenAlex/arXiv | C (pointer to A) | Academic paper summaries on intraday volatility and time-of-day effects. Always follow the link to the paper and tier the paper, not the post. |
+| alma271828 (`@alma271828`) | vault | C, B after larp check | Futures posts on volume profile, VWAP and opening auctions with coded indicators. Closest fit to E-004 (volume read carries the signal). |
+| Julie Wade (`@julie_wade`) | vault | C | VIX and realized-vol thresholds against ES intraday ranges. Use as a regime filter idea, not a standalone signal. |
+| QuantifiedStrat (`@QuantifiedStrat`) | vault | C | Rule-based backtests with stats, including session effects. Check sample size and costs per post. |
+
+## Run priority (planner, 2026-10-11)
+Within the 15-idea ceiling, after the vault inbox (D-029), evaluate sources in this order:
+1. Tier B: Concretum Research, Kieran Duff (method notes only; no idea quota).
+2. Paper pointers: quantseeker (fetch the paper, tier A).
+3. Volume-first C: alma271828, then PropQuantX.
+4. Other C, only if the ceiling allows: Julie Wade (filter ideas), QuantifiedStrat, ZenomTrader, The Milk Man (non-options threads only), Jan Algo Trader.
+Handles come from planner X searches; confirm on first capture.
 
 ## Curated: seed reading list (tier A unless marked)
 Grouped by the question they answer for this project.
@@ -128,9 +141,4 @@ Capture methods:
 - Crypto-only, options-only and single-stock ideas that don't port to the pilot CFDs.
 
 ## Discovered (unreviewed)
-- 2026-10-10, planner, X live search. sirooj to review; promote or remove:
-  - `@ConcretumR`: Concretum Research; intraday US futures backtests with code. (Likely B, matches the Concretum row.)
-  - `@QuantifiedStrat`: rule-based strategy backtests with stats, incl. session effects. (C until checked.)
-  - `@quantseeker`: summaries of academic papers on intraday volatility and time-of-day effects. (C; a pointer to A papers.)
-  - `@alma271828`: futures posts on volume profile, VWAP and opening auctions with coded indicators. (C until checked.)
-  - `@julie_wade`: VIX/realized-vol thresholds vs ES intraday ranges. (C until checked.)
+- 2026-10-11: all five 2026-10-10 entries reviewed by sirooj and promoted to "Curated: people". Nothing pending.
