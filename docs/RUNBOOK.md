@@ -89,3 +89,27 @@ Skill note: the funnel reads `D:\SRJ Venture\private\vault\inbox\**` as rung
   `D:\SRJ Venture\private\vault\telegram_allowlist.txt` (one per line).
 - Discord: manual capture only (no user-token automation; bot token only
   where the server admin invited the bot). Out of scope for automation (D-025).
+
+## 5. Disk (C: is nearly full — 2026-10-11 audit)
+
+C: free 2.5 GB → 20.2 GB after the MT5-log agent freed 16.8 GB and a %TEMP%
+pass removed 85 files (~20 MB). Biggest C: consumer is OpenCode's own store:
+`C:\Users\winar\.local\share\opencode` = 51.8 GB (`opencode.db` 51.6 GB live).
+Do NOT move or delete it while OpenCode runs.
+
+Move procedure (sirooj, OpenCode fully closed):
+
+```powershell
+robocopy 'C:\Users\winar\.local\share\opencode' 'D:\SRJ Venture\.opencode-data' /MIR /XJ
+Rename-Item -LiteralPath 'C:\Users\winar\.local\share\opencode' -NewName 'opencode.bak'
+cmd /c mklink /J 'C:\Users\winar\.local\share\opencode' 'D:\SRJ Venture\.opencode-data'
+# start OpenCode, verify sessions load, then:
+Remove-Item -LiteralPath 'C:\Users\winar\.local\share\opencode.bak' -Recurse -Force
+```
+
+No data-directory setting or session-pruning command was found
+(`opencode db` only offers an interactive sqlite shell and a path print, no
+vacuum/prune subcommand). If space gets tight again: the MT5-log agent owns
+`AppData\Roaming\MetaQuotes` (kept Tester/logs cited by B-160/B-162/B-165R);
+other D:-candidates needing sirooj's call: npm-cache 1.4 GB, `.cache` 0.4 GB,
+Local\OpenAI 0.7 GB.
