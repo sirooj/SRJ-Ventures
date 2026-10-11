@@ -3,7 +3,7 @@
 > **Read this first in every new session**, whether you are the PromptQL planner or the OpenCode coder. It is the single source of truth for "where are we". History lives in git, decisions live in `docs/DECISIONS.md`, and the long-term domain context lives in `docs/WIKI_SEED.md` and the PromptQL wiki.
 > **Owner of this file:** the PLANNER updates it at the end of every session and delivers it in a relay. The CODER may fix numbers or facts and must note that in the PR.
 
-_Last updated: 2026-10-10 (planner session, PromptQL project "7", bot e4d720de-937a-43f3-954e-ee6933bf5f17): review round 04, D-026, D-027 (relay WORKFLOW 04)_
+_Last updated: 2026-10-11 (planner session, PromptQL project "7", bot e4d720de-937a-43f3-954e-ee6933bf5f17): D-028 (relay WORKFLOW 05)_
 
 ---
 
@@ -73,19 +73,22 @@ Labels: `ready-for-code`, `in-progress`, `needs-review`, `question`, `research`,
 | W2 (#21) | research-web ladder | — | ✅ PR #28 (DeepAPI unavailable until a key exists) |
 | W3 (#22) | Engine spike vs study 01 | data from #2 | ready-for-code under D-027 |
 | W4 (#23) | Back-fill `TRIALS.csv` | — | ✅ PR #27, 956 rows (01: 268, 02: 688) |
-| W5 (#26) | Vault inbox + Telegram exporter | #20 | ✅ PR #31; live export needs sirooj's Telegram API id |
+| W5 (#26) | Vault inbox + Telegram exporter | #20 | ✅ PR #31; inactive, bottom priority (D-028) |
+| W6 (#35) | Free search backends before DeepAPI | #28 | ready-for-code |
 
 ## 5. Next actions
 
 1. **CODER:**
+   - C: audit + pre-approved cleanup (relay 05 A); RUNBOOK "Disk" section for moving the OpenCode store.
    - #22 (W3) under D-027.
+   - W6.
    - #6, now unblocked, including the index QA calendar fix.
    - Funnel run 2 with the scheduler on (see C).
    - CODER reports in Evidence order on PRs #10, #11 and #12, if they are missing.
 2. **sirooj:**
-   - Free space on C: for PR #12 (mcp-mt5).
-   - Create a Telegram API id, save it to `.secrets\telegram.env`, and fill the allow-list (RUNBOOK §4).
-   - Optional: a DeepAPI key ($3/week, D-024).
+   - Move the OpenCode store to D: using RUNBOOK "Disk" (OpenCode closed).
+   - (bottom priority, optional) Telegram api_id + api_hash from my.telegram.org.
+   - DeepAPI key not needed once W6 lands.
    - SOURCES.md: veto or edit entries, review the 5 X accounts under "Discovered", and name trusted YouTube, Discord and Telegram sources.
    - Answer the open #5 items: Flow Nexus timeframes/sessions, and whether any MT5 statement or tester report exists.
    - Fill the FTMO/The5ers fee tables when convenient.
