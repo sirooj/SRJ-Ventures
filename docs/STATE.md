@@ -3,7 +3,7 @@
 > **Read this first in every new session**, whether you are the PromptQL planner or the OpenCode coder. It is the single source of truth for "where are we". History lives in git, decisions live in `docs/DECISIONS.md`, and the long-term domain context lives in `docs/WIKI_SEED.md` and the PromptQL wiki.
 > **Owner of this file:** the PLANNER updates it at the end of every session and delivers it in a relay. The CODER may fix numbers or facts and must note that in the PR.
 
-_Last updated: 2026-10-11 (planner session, PromptQL project "7", bot e4d720de-937a-43f3-954e-ee6933bf5f17): D-029 vault intake (relay WORKFLOW 06)_
+_Last updated: 2026-10-11 (planner session, PromptQL project "7", bot e4d720de-937a-43f3-954e-ee6933bf5f17): Discovered accounts promoted, run-2 priority (relay WORKFLOW 07)_
 
 ---
 
@@ -78,11 +78,10 @@ Labels: `ready-for-code`, `in-progress`, `needs-review`, `question`, `research`,
 
 ## 5. Next actions
 
-1. **CODER:** relay 06 B and C; #22 (W3) under D-027; funnel run 2 (vault first, then rungs 0–3); W6 (#35); #6; CODER reports in Evidence order on PRs #10–#12 if missing.
+1. **CODER:** relay 07 A; #22 (W3) under D-027; funnel run 2 (vault first, then SOURCES.md § Run priority, rungs 0–3); W6 (#35); #6; CODER reports in Evidence order on PRs #10–#12 if missing.
 2. **sirooj:**
    - Optional but recommended: move the OpenCode store (51.8 GB) to D: per RUNBOOK §5, with OpenCode closed.
-   - Capture free Discord code and threads (ZenomTrader, PropQuantX) into the vault inbox with front-matter (template in vault\templates).
-   - Keep the SOURCES.md review item (the 5 Discovered X accounts).
+   - Capture free Discord code and threads (ZenomTrader, PropQuantX) into vault\inbox\ea_code\<author>\<name>\ (code + README note) and vault\inbox\discord\<server>\ (threads), with front-matter from vault\templates\funnel-note.md.
    - Answer the open #5 items: Flow Nexus timeframes/sessions, and whether any MT5 statement or tester report exists.
    - Fill the FTMO/The5ers fee tables when convenient.
 3. **PLANNER:**
