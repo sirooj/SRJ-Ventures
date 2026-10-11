@@ -68,7 +68,7 @@ E-006 was written to stop this. Since E-014, all compute runs on sirooj's machin
    - Relay it; the CODER runs it.
 5. **Forward holdout:** OOS 2025-07-01 → 2026-09-30 has been used once, to select F7. Data from 2026-10-01 onward is the fresh forward holdout (E-013). No study run touches it until the planner says so.
 6. **OPERATOR (optional, Flow Nexus track):** E-011's point evidence could let `config/instruments.yaml` mark both indices `point_verified: true`. That file is shared infrastructure, so it changes only through the Flow Nexus track (D-020), not through an edge PR.
-7. **CODER (W4, relay WORKFLOW 02):** back-fill `research/edge/TRIALS.csv` from studies 01 and 02 (E-016). From now on, every study PR appends its own rows, and every CODER report states the study's cumulative trial count.
+7. ✅ W4 done (PR #27): TRIALS.csv back-filled, 956 rows (study 01: 268, study 02: 688).
 8. **PLANNER, each session:** once the Idea Funnel has run, read `research/funnel/queue.md` and promote, park or reject (`srj-idea-funnel`). A promoted candidate becomes a new study only through a locked `CARD.md`.
 
 ## 6. Study 02 design

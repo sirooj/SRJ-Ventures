@@ -3,7 +3,7 @@
 > **Read this first in every new session**, whether you are the PromptQL planner or the OpenCode coder. It is the single source of truth for "where are we". History lives in git, decisions live in `docs/DECISIONS.md`, and the long-term domain context lives in `docs/WIKI_SEED.md` and the PromptQL wiki.
 > **Owner of this file:** the PLANNER updates it at the end of every session and delivers it in a relay. The CODER may fix numbers or facts and must note that in the PR.
 
-_Last updated: 2026-10-10 (planner session, PromptQL project "7", bot e4d720de-937a-43f3-954e-ee6933bf5f17): D-025 (relay WORKFLOW 03), W1–W4 filed as #20–#23_
+_Last updated: 2026-10-10 (planner session, PromptQL project "7", bot e4d720de-937a-43f3-954e-ee6933bf5f17): review round 04, D-026, D-027 (relay WORKFLOW 04)_
 
 ---
 
@@ -16,7 +16,7 @@ _Last updated: 2026-10-10 (planner session, PromptQL project "7", bot e4d720de-9
 
 **PLANNER (a new PromptQL bot) on start:** follow `srj-session-start` and `srj-credit-budget`. In short:
 1. Read the `SRJ Ventures` wiki page. If it doesn't exist (new project), seed it from `docs/WIKI_SEED.md` with a learning block.
-2. In one program run, fetch from GitHub (`__github` integration):
+2. In one program run, fetch from GitHub (the project's GitHub integration: `github` in project 7, `__github` elsewhere):
    - `docs/STATE.md` and `docs/DECISIONS.md`,
    - the titles of open issues and open PRs,
    - `research/funnel/queue.md`, once the funnel has run.
@@ -58,44 +58,44 @@ Labels: `ready-for-code`, `in-progress`, `needs-review`, `question`, `research`,
 
 | # | Title | Depends on | Status |
 |---|---|---|---|
-| #2 | [DATA] Full-history pilot + index point verification | — | downloading (single run, pinned 16.62.244.190, atomic .bi5 writes); then convert FX → verify indices → bars → PR. Also feeds the edge track (E-015). |
+| #2 | [DATA] Full-history pilot + index point verification | — | ✅ PR #29. FX ~99.3%, indices ~90% (daily CME halt; QA calendar fix in #6). US500 + NAS100 point_verified |
 | #3 | [PROPFIRM] Rules schema + loader + 3 YAMLs | — | ✅ PR #8 merged |
 | #4 | [PROPFIRM] Challenge simulator v0 + MC + demo | #3 | PR #11 `needs-review` |
 | #5 | [RESEARCH] Read-only MQL5 inventory | — | PR #10 `needs-review`; baseline = SRJ Flow Nexus EA (D-021) |
-| #6 | [CODE] Phase 0 follow-ups | #2 | queued (`ready-for-code`) |
-| #9 | [TOOLS] mcp-mt5 for headless Strategy Tester runs + deals export | #5 inventory | PR #12 `needs-review` (D-022) |
+| #6 | [CODE] Phase 0 follow-ups | #2 | unblocked (ready-for-code); includes the index QA calendar fix |
+| #9 | [TOOLS] mcp-mt5 for headless Strategy Tester runs + deals export | #5 inventory | PR #12 needs-review; blocked on C: free space (sirooj) |
 
-**Workflow v2 · Reuse + funnel (D-024, D-025):** filed (PR #24, 03d6d61).
+**Workflow v2 · Reuse + funnel (D-024, D-025):**
 
 | # | Title | Depends on | Status |
 |---|---|---|---|
-| W1 (#20) | [TOOLS][FUNNEL] Idea Funnel scaffold + validator | W2 for rungs 2–3 | ready-for-code |
-| W2 (#21) | [TOOLS] research-web ladder: install + smoke test | — | ready-for-code |
-| W3 (#22) | [TOOLS][BACKTEST] Engine spike: vectorbt + NautilusTrader vs study 01 | NAS100 bars for study 01's IS window (#17 / #2) | ready-for-code |
-| W4 (#23) | [RESEARCH][EDGE] Back-fill `TRIALS.csv` | — | ready-for-code |
-| W5 (#<new>) | [TOOLS][FUNNEL] Vault inbox + Telegram exporter | #20 | ready-for-code |
+| W1 (#20) | Idea Funnel scaffold + validator | W2 | ✅ PR #30 |
+| W2 (#21) | research-web ladder | — | ✅ PR #28 (DeepAPI unavailable until a key exists) |
+| W3 (#22) | Engine spike vs study 01 | data from #2 | ready-for-code under D-027 |
+| W4 (#23) | Back-fill `TRIALS.csv` | — | ✅ PR #27, 956 rows (01: 268, 02: 688) |
+| W5 (#26) | Vault inbox + Telegram exporter | #20 | ✅ PR #31; live export needs sirooj's Telegram API id |
 
 ## 5. Next actions
 
 1. **CODER:**
-   - Commit relay WORKFLOW 02 (and WORKFLOW 01, if it is still uncommitted), file W1–W4, and report.
-   - Create the label `execution-critical`.
-   - Keep #2 running.
-   - Add a CODER report in Evidence order (`srj-relay`) to the bodies of PRs #10, #11 and #12 if they don't have one.
-   - Write `docs/RUNBOOK.md`, now including the research-web setup and the funnel command.
-   - Order: W2 → W1 → W3 (once its data exists). Start #6 once #2 lands.
+   - #22 (W3) under D-027.
+   - #6, now unblocked, including the index QA calendar fix.
+   - Funnel run 2 with the scheduler on (see C).
+   - CODER reports in Evidence order on PRs #10, #11 and #12, if they are missing.
 2. **sirooj:**
-   - Optional: get a DeepAPI key (deepapi.co) and save it under `D:\SRJ Venture\.secrets\`. The weekly cap is $3 (D-024). Without a key, the funnel uses curated sources only.
-   - Veto or edit SOURCES.md entries (the planner curates it, D-025). Capture Discord, Telegram and EA material into the vault inbox. When W5 starts, create a Telegram API id at my.telegram.org, save it under `.secrets\`, and list the channels to allow-list.
-   - Answer any still-open #5 items: the timeframes/sessions of Flow Nexus, and whether there is any MT5 statement or tester report.
+   - Free space on C: for PR #12 (mcp-mt5).
+   - Create a Telegram API id, save it to `.secrets\telegram.env`, and fill the allow-list (RUNBOOK §4).
+   - Optional: a DeepAPI key ($3/week, D-024).
+   - SOURCES.md: veto or edit entries, review the 5 X accounts under "Discovered", and name trusted YouTube, Discord and Telegram sources.
+   - Answer the open #5 items: Flow Nexus timeframes/sessions, and whether any MT5 statement or tester report exists.
    - Fill the FTMO/The5ers fee tables when convenient.
 3. **PLANNER:**
-   1. Review PRs #11, #10 and #12 from their CODER reports.
-   2. Review the W1–W3 reports and update the verdicts in `docs/TOOLING.md`.
-   3. Each session, once the funnel has run: read `research/funnel/queue.md` and promote, park or reject (`srj-idea-funnel`).
+   1. Review the W3 report and record the engine verdict in `docs/TOOLING.md`.
+   2. Review PRs #11, #10 and #12 from their CODER reports.
+   3. Each session: run the queue.md promote/park/reject pass, and review SOURCES.md "Discovered".
    4. Pick the port scope.
    5. Draft strategy cards 1–8 as `research/cards/*.md`.
-   6. Each session: review SOURCES.md 'Discovered' entries and the vault-derived candidates.
+   6. Edge track: write the study-02 step-2 addendum after "go step 2" and the B1–B3 reports (#17–#19).
 
 ## 6. Hard constraints (from DECISIONS)
 
