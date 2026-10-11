@@ -1,7 +1,7 @@
 ---
 id: 2026-10-10_US500_M15_hmm-momentum_c3e355
 hash: c3e355
-status: QUEUED
+status: REJECTED
 family: hmm-momentum
 instrument: US500
 timeframe: M15
@@ -14,3 +14,5 @@ created: 2026-10-10
 ---
 Trade US500 intraday momentum states from a Hidden Markov Model with volatility-ratio and time-of-day side information.
 Unverified external claim. Not tested on SRJ data.
+
+Planner verdict (WORKFLOW 04, REJECT): rule volume-first (E-004) — the model has no volume input. Evidence comes from a single year (ES, 2011).
