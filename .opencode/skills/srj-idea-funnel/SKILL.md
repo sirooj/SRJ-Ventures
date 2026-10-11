@@ -22,6 +22,15 @@ Never edit: the decision logs, the STATE pointers, any locked `CARD.md`, `docs/p
 - **Shortfall:** if the ceiling is hit below the floor, log `shortfall` with the reason. Never pad the queue.
 - **Lookback:** 30 days for forums, social and news. No limit for papers and classic sources; dedup prevents repeats.
 
+## Vault inbox (rung `vault`, D-029)
+sirooj's Obsidian vault at `D:\SRJ Venture\private\vault\` (outside git) is an input on every run.
+0. Run `uv run python tools/tg_export.py check` first. If it fails, stop the run.
+1. **Scan first.** List notes and code folders under `inbox\**` that are not in `vault\.funnel_seen.csv` (path, sha256, run_date, outcome; this file never goes into git). Evaluate them before web sources. They count toward the 15-idea ceiling; overflow waits for the next run. Add `vault_new=<n> vault_skipped=<n>` to the runs.log line.
+2. **Front-matter.** A note without the SOURCES.md front-matter is not evaluated and not rejected. List it in the run report as `vault_skipped: front-matter`, so sirooj can fix it.
+3. **Code is a spec.** For `inbox\ea_code\<author>\<name>\`, read the code and its README note to extract the rule. The candidate restates the rule in your own words. Never quote or paste code into git. Record `licence` in the source record. One Discord thread or code folder can yield several ideas; screen each one.
+4. **Source record.** For a vault item, `evidence.md` gives the author, original platform, date and vault path instead of a URL. It states plainly when the source gives no sample, costs or out-of-sample test (larp check).
+5. **Ports.** NinjaScript, Pine or Python ideas are codified for our Dukascopy bars. Exchange-volume or footprint inputs get `volume_port`. Options-only ideas are rejected as non-CFD. Grid, martingale and no-stop code is a hard reject, as usual.
+
 ## Per idea
 1. **Screen** against the hard-reject list. On a hit, write a row to `rejected/index.csv` and move on.
 2. **Dedup:**

@@ -3,7 +3,7 @@
 > **Read this first in every new session**, whether you are the PromptQL planner or the OpenCode coder. It is the single source of truth for "where are we". History lives in git, decisions live in `docs/DECISIONS.md`, and the long-term domain context lives in `docs/WIKI_SEED.md` and the PromptQL wiki.
 > **Owner of this file:** the PLANNER updates it at the end of every session and delivers it in a relay. The CODER may fix numbers or facts and must note that in the PR.
 
-_Last updated: 2026-10-11 (planner session, PromptQL project "7", bot e4d720de-937a-43f3-954e-ee6933bf5f17): D-028 (relay WORKFLOW 05)_
+_Last updated: 2026-10-11 (planner session, PromptQL project "7", bot e4d720de-937a-43f3-954e-ee6933bf5f17): D-029 vault intake (relay WORKFLOW 06)_
 
 ---
 
@@ -63,7 +63,7 @@ Labels: `ready-for-code`, `in-progress`, `needs-review`, `question`, `research`,
 | #4 | [PROPFIRM] Challenge simulator v0 + MC + demo | #3 | PR #11 `needs-review` |
 | #5 | [RESEARCH] Read-only MQL5 inventory | — | PR #10 `needs-review`; baseline = SRJ Flow Nexus EA (D-021) |
 | #6 | [CODE] Phase 0 follow-ups | #2 | unblocked (ready-for-code); includes the index QA calendar fix |
-| #9 | [TOOLS] mcp-mt5 for headless Strategy Tester runs + deals export | #5 inventory | PR #12 needs-review; blocked on C: free space (sirooj) |
+| #9 | [TOOLS] mcp-mt5 for headless Strategy Tester runs + deals export | #5 inventory | PR #12 needs-review; C: gate cleared (20.2 GB free after relay 05); Flow Nexus tester pass still waits on #5 |
 
 **Workflow v2 · Reuse + funnel (D-024, D-025):**
 
@@ -78,18 +78,11 @@ Labels: `ready-for-code`, `in-progress`, `needs-review`, `question`, `research`,
 
 ## 5. Next actions
 
-1. **CODER:**
-   - C: audit + pre-approved cleanup (relay 05 A); RUNBOOK "Disk" section for moving the OpenCode store.
-   - #22 (W3) under D-027.
-   - W6.
-   - #6, now unblocked, including the index QA calendar fix.
-   - Funnel run 2 with the scheduler on (see C).
-   - CODER reports in Evidence order on PRs #10, #11 and #12, if they are missing.
+1. **CODER:** relay 06 B and C; #22 (W3) under D-027; funnel run 2 (vault first, then rungs 0–3); W6 (#35); #6; CODER reports in Evidence order on PRs #10–#12 if missing.
 2. **sirooj:**
-   - Move the OpenCode store to D: using RUNBOOK "Disk" (OpenCode closed).
-   - (bottom priority, optional) Telegram api_id + api_hash from my.telegram.org.
-   - DeepAPI key not needed once W6 lands.
-   - SOURCES.md: veto or edit entries, review the 5 X accounts under "Discovered", and name trusted YouTube, Discord and Telegram sources.
+   - Optional but recommended: move the OpenCode store (51.8 GB) to D: per RUNBOOK §5, with OpenCode closed.
+   - Capture free Discord code and threads (ZenomTrader, PropQuantX) into the vault inbox with front-matter (template in vault\templates).
+   - Keep the SOURCES.md review item (the 5 Discovered X accounts).
    - Answer the open #5 items: Flow Nexus timeframes/sessions, and whether any MT5 statement or tester report exists.
    - Fill the FTMO/The5ers fee tables when convenient.
 3. **PLANNER:**
