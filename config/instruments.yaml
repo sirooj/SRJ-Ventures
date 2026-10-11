@@ -25,15 +25,19 @@ instruments:
   NZDUSD: {dukascopy_symbol: NZDUSD, point: null, vp_bin: 0.00050, sessions: *fx}
 
   # ---- Indices (feed symbols verified live in Phase 0 pilot) ----
-  # point PROVISIONAL 2026-10-05: point=1000 gives levels matching public
-  # Sep/Oct-2026 closes (SPX~7700, NDX~30680, DJI~51180, DAX~25180, FTSE~10450)
-  # with sane CFD spreads (0.5-2.0 pts). No tick-level reference exists
-  # (sirooj's archives are FX-only) — re-verify before backtest use.
+  # point VERIFIED 2026-10-06 (E-011, edge track): US500 point=1000 tick-exact
+  # vs dukascopy-node for 2026-09-01 (32,338/32,338 ticks); NAS100 point=1000
+  # matched every overlapping tick exactly (46,573 ticks, worst diff 0).
+  # Re-checked 2026-10-10 (#2 step 4): dukascopy-node returned 0 bytes from
+  # jetta for 2026-09-01 (feed-side gap on the node path, not our data), so no
+  # fresh tick-exact re-verify was possible; local magnitudes at point=1000
+  # match public Sep/Oct-2026 levels (SPX~7700, NDX~30680; ours 7652/29124 on
+  # 2026-09-01 14:00 UTC). Parser and point unchanged since E-011.
   # NOTE: US index CFDs halt daily ~21:15-22:00 UTC (CME maintenance); expect
   # ~94% raw minute-coverage — the halt is a market closure, not missing data.
-  USA500IDXUSD:  {dukascopy_symbol: USA500IDXUSD,  point: 1000, point_verified: false, vp_bin: 1.0,
+  USA500IDXUSD:  {dukascopy_symbol: USA500IDXUSD,  point: 1000, point_verified: true, vp_bin: 1.0,
                   sessions: [{name: new_york, tz: America/New_York, open: "09:30", close: "16:00"}]}
-  USATECHIDXUSD: {dukascopy_symbol: USATECHIDXUSD, point: 1000, point_verified: false, vp_bin: 5.0,
+  USATECHIDXUSD: {dukascopy_symbol: USATECHIDXUSD, point: 1000, point_verified: true, vp_bin: 5.0,
                   sessions: [{name: new_york, tz: America/New_York, open: "09:30", close: "16:00"}]}
   USA30IDXUSD:   {dukascopy_symbol: USA30IDXUSD,   point: 1000, point_verified: false, vp_bin: 10.0,
                   sessions: [{name: new_york, tz: America/New_York, open: "09:30", close: "16:00"}]}

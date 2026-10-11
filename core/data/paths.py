@@ -27,6 +27,14 @@ def raw_bi5_path(symbol: str, year: int, month0: int, day: int, hour: int) -> Pa
     )
 
 
+def raw_empty_path(symbol: str, year: int, month0: int, day: int, hour: int) -> Path:
+    """0-byte marker next to the .bi5 path: the feed had no ticks (404/empty).
+
+    Lets resume skip weekend/holiday hours without re-requesting them.
+    """
+    return raw_bi5_path(symbol, year, month0, day, hour).with_suffix(".empty")
+
+
 def ticks_month_path(symbol: str, year: int, month: int) -> Path:
     """Monthly tick parquet: ticks/symbol=<SYM>/year=<YYYY>/month=<MM>/part.parquet."""
     return (
